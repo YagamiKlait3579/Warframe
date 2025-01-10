@@ -1,7 +1,7 @@
 ﻿;;;;;;;;;; Loading ;;;;;;;;;;
     #include %A_Scriptdir%\libs\BaseLibs\Header.ahk
-    ;#IfWinActive, 
-    ;global PWN := "" ; Program window name
+    #IfWinActive, Warframe
+    global PWN := "Warframe" ; Program window name
 
 ;;;;;;;;;; Setting ;;;;;;;;;;
 
