@@ -4,11 +4,34 @@
     global A_MagusAnomaly
 
 ;;;;;;;;;; Hotkeys ;;;;;;;;;;
+    Hotkey, *%EnergyDrainKey%, EnergyDrain
     Hotkey, *%MagusAnomalyKey%, MagusAnomaly
     Hotkey, *%CancelAnimationKey%, CancelAnimation
     Hotkey, *%InputTestKey%, InputTest
     
 ;;;;;;;;;; Additional functions ;;;;;;;;;;
+    EnergyDrain() {
+        global
+        if AddAbilityED1
+            Send, {Blind}{%AbilityB_Key%}
+        Send, {Blind}{%CrouchKey% Down}
+        fSleep(1)
+        if !MagusMeltED1
+            loop, 21 {
+                Send, {Blind}{%JumpKey%}{%PrimFireKey%}
+                fSleep(1)
+            }
+        else 
+            loop, 21 {
+                Send, {Blind}{%JumpKey%}
+                fSleep(2)
+                Send, {Blind}{%PrimFireKey%}
+                fSleep(2)
+            }
+        Send, {Blind}{%CrouchKey% Up}
+        Send, {Blind}{%ToggleCrouchKey%}
+    }
+
     MagusAnomaly() {
         global
         if MagusAnomalySpam
