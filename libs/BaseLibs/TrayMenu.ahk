@@ -21,6 +21,9 @@
     Menu, Tray2, Add, Find text, OpenFindText
     Menu, Tray2, icon, Find text, %FP_Base_ICO%, 20
 
+    Menu, Tray2, Add, Eidolons shield calculator, OpenEidolonsShieldCalculator
+    Menu, Tray2, icon, Eidolons shield calculator, %FP_Base_ICO%, 26
+
     Menu, Tray, Add
     Menu, Tray, Add, Other programs, :Tray2
     Menu, Tray, icon, Other programs, %FP_Base_ICO%, 22
@@ -58,6 +61,10 @@
 
     OpenFindText() {
         Run, % CheckingFiles(,"FindText.ahk")
+    }
+
+    OpenEidolonsShieldCalculator() {
+        Run, % CheckingFiles(,"EidolonsShieldCalculator.ahk")
     }
 
     OpenDiscord() { 
