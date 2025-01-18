@@ -12,25 +12,20 @@
     BigTimeStepKey       = Shift
     SkillCastTime       := 1000   ; Время применения одной способности
     ;--------------------------------------------------
-    Exodia_ThrowingTime := 50     ; Время броска
-    Exodia_LandingTime  := 450    ; Время приземления
-    ExodiaSpamKey        = PgDn   ; Вкл\Выкл повторения бросков при зажатии клавиши
-    ;--------------------------------------------------
-    GuiPositionY        := 0.9600 ; Изменение положения интерфейса по вертикали (Y-координата) только для этого скрипта
+    A_Pauses            := 100    ; Паузы между выстрелами (при зажатии StartKey из файла Settings)
 
 ;;;;;;;;;; Variables ;;;;;;;;;;
     CheckingFiles(,"SavedSettings.ini")
-    LoadIniSection(FP_SavedSettings, "Master Tenno")
+    LoadIniSection(FP_SavedSettings, "Arbitrations")
     ;--------------------------------------------------
     global gAbilityTimer := []
     for A_Loop, A_key in [AbilityTimer_A, AbilityTimer_B, AbilityTimer_C, AbilityTimer_D]
         gAbilityTimer.Push(A_key ? A_key : 1000)
-    ExodiaSpam := ExodiaSpam ? ExodiaSpam : 0  
     global A_AbilityKey := [AbilityA_Key, AbilityB_Key, AbilityC_Key, AbilityD_Key]
     global A_Activity := [0,0,0,0], A_Stamp := [], A_TimeEdit
     
 ;;;;;;;;;; Hotkeys ;;;;;;;;;;
-    Hotkey, *%StartKey%, ClassicExodia
+    Hotkey, *%StartKey%, Arbitrations
 
     for A_Loop, A_key in A_AbilityKey {
         fHotkey := Func("TimeEdit").Bind(A_Loop)
@@ -45,11 +40,8 @@
     Hotkey, *%IncreaseKey%, IncreaseTiming
     Hotkey, *%DecreaseKey%, DecreaseTiming
 
-    Hotkey, *%ExodiaSpamKey%, SwitchExodia
-
 ;;;;;;;;;; Gui ;;;;;;;;;;
     PlaceForTheText := "999999"
-    PlaceForTheText2 := "  Classic  "
     ;--------------------------------------------------
     UpdateDGP({"Transparency" : gTransparency, "Blur" : gBlur, "Scale" : gInterfaceScale})
     GuiInGame("Start", "MainInterface")
@@ -65,12 +57,6 @@
         Gui, MainInterface: Add, Text, x+m ym +Center +Border cRed vAbility4,`  4  `
         Gui, MainInterface: Add, Text, x+ ym +Center +Border cFuchsia vTimer4, %PlaceForTheText%
         GuiControl, MainInterface: Text, Timer4, % gAbilityTimer.4
-        ;--------------------------------------------------
-        Gui, MainInterface: Add, Text, xm y+m +Right,` Exodia:
-        Gui, MainInterface: Add, Text, x+m +Center +Border cYellow vExodiaSpam_Gui, %PlaceForTheText2%
-        GuiControl, MainInterface: Text, ExodiaSpam_Gui, % ExodiaSpam ? "Auto" : "Semi"
-        Gui, MainInterface: Add, Text, xs yp +Right,` FPS:
-        Gui, MainInterface: Add, Text, x+m +Center +Border cFuchsia,`  %SettingFPS%  `
     GuiInGame("End", "MainInterface", {"ratio" : [GuiPositionX,GuiPositionY]})
     fSuspendGui("On", "MainInterface")
     if DebugGui
@@ -80,32 +66,11 @@
     Return
 
 ;;;;;;;;;; Scripts ;;;;;;;;;;
-    ClassicExodia:
+    Arbitrations:
         While GetKeyState(StartKey, "p"){
-            TimeStamp(ExodiaStart)
-            Send, {Blind}{%JumpKey%}
-            fSleep(2)
-            Send, {Blind}{%JumpKey%}
-            fSleep(2)
-            Send, {Blind}{%ZoomKey% Down}
-            fSleep(2)
-            Send, {Blind}{%MeleeKey%}
-            fSleep(2)
-            Send, {Blind}{%ZoomKey% Up}
-            if !ExodiaSpam
-                Break
-            lSleep(Exodia_ThrowingTime)
-            Send, {Blind}{%EmoteAgreeKey%}
-            fSleep(2)
-            Send, {Blind}{%EmoteAgreeKey2%}
-            lSleep(Exodia_LandingTime)
-            Send, {Blind}{%ZoomKey%}
-            fSleep(2)
-            fDebugGui("Edit", "Exodia throw", TimePassed(ExodiaStart))
+            Send, {Blind}{%PrimFireKey%}
+            lSleep(2)
         }
-        fSleep(2)
-        Send, {Blind}{%ZoomKey%}
-        fDebugGui("Edit", "Exodia throw", TimePassed(ExodiaStart))
     Return
 
     BaseScript:
@@ -130,11 +95,6 @@
         else
             SetTimer, BaseScript, off
     }
-
-    SwitchExodia:
-        ExodiaSpam := !ExodiaSpam
-        GuiControl, MainInterface: Text, ExodiaSpam_Gui, % ExodiaSpam ? "Auto" : "Semi"
-    Return
 
     TimeEdit(key) {
         Loop, 4
@@ -181,6 +141,5 @@
     BeforeExiting() {
         global
         for A_Loop, A_key in ["AbilityTimer_A", "AbilityTimer_B", "AbilityTimer_C", "AbilityTimer_D"]
-            IniWrite, % gAbilityTimer[A_Loop] , %FP_SavedSettings%, Master Tenno, %A_key%
-        IniWrite, %ExodiaSpam%, %FP_SavedSettings%, Master Tenno, ExodiaSpam
+            IniWrite, % gAbilityTimer[A_Loop] , %FP_SavedSettings%, Arbitrations, %A_key%
     }
