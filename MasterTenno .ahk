@@ -10,6 +10,7 @@
     TimeStep            := 100    ; Шаг изменение времени для способности
     BigTimeStep         := 1000   ; Шаг изменение времени для способности при удержании клавиши BigTimeStepKey
     BigTimeStepKey       = Shift
+    SkillCastTime       := 1000   ; Время применения одной способности
     ;--------------------------------------------------
     Exodia_ThrowingTime := 50     ; Время броска
     Exodia_LandingTime  := 450    ; Время приземления
@@ -21,7 +22,10 @@
     CheckingFiles(,"SavedSettings.ini")
     LoadIniSection(FP_SavedSettings, "Master Tenno")
     ;--------------------------------------------------
-    global gAbilityTimer := [AbilityTimer_A, AbilityTimer_B, AbilityTimer_C, AbilityTimer_D]
+    global gAbilityTimer := []
+    for A_Loop, A_key in [AbilityTimer_A, AbilityTimer_B, AbilityTimer_C, AbilityTimer_D]
+        gAbilityTimer.Push(A_key ? A_key : 1000)
+    ExodiaSpam := ExodiaSpam ? ExodiaSpam : 0  
     global A_AbilityKey := [AbilityA_Key, AbilityB_Key, AbilityC_Key, AbilityD_Key]
     global A_Activity := [0,0,0,0], A_Stamp := [], A_TimeEdit
     
@@ -109,6 +113,7 @@
             if A_key && (TimePassed(A_Stamp[A_Loop]) > gAbilityTimer[A_Loop]) {
                 B_key := A_AbilityKey[A_Loop]
                 Send, {Blind}{%B_key%}
+                lSleep(SkillCastTime)
                 A_Stamp[A_Loop] := TimeStamp()
             }
         }
