@@ -101,11 +101,11 @@
             lSleep(Exodia_LandingTime)
             Send, {Blind}{%ZoomKey%}
             fSleep(2)
-            fDebugGui("Edit", "Exodia throw", TimePassed(ExodiaStart))
+            fDebugGui("Edit", "Exodia throw", TimePassed(ExodiaStart) " ms")
         }
         fSleep(2)
         Send, {Blind}{%ZoomKey%}
-        fDebugGui("Edit", "Exodia throw", TimePassed(ExodiaStart))
+        fDebugGui("Edit", "Exodia throw", TimePassed(ExodiaStart) " ms")
     Return
 
     BaseScript:

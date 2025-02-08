@@ -66,3 +66,4 @@
     #include %A_Scriptdir%\libs\AuxiliaryScripts\Gdip.ahk
     ;--------------------------------------------------
     #include *i %A_Scriptdir%\libs\AdditionalFunctions.ahk
+    #include *i %A_Scriptdir%\libs\AimAssist.ahk

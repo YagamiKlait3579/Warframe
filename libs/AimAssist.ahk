@@ -41,7 +41,7 @@ AimLocPin(SearchArea, FindText, A_FindText = 0.30, MouseSpeed = 1) {
         moving_Y := LocPinY < StopAim[2] ? Floor(((LocPinY - gScreenCenter[2]) / MouseSpeed)) : LocPinY > StopAim[4] ? Ceil(((LocPinY - gScreenCenter[2]) / MouseSpeed)) : 0
         if (moving_X = 0 && moving_Y = 0)
             Break
-        fMoveMouse(moving_X, moving_Y)
+        fMoveMouse(moving_X, -moving_Y)
     }
     fBorder("AimLocPin", "Destroy")
     Return 0
@@ -62,7 +62,7 @@ CaptureLocPin(SearchArea, FindText, Time, TimeStamp = "", A_FindText = 0.30, Mou
         FindText(LocPinX, LocPinY, SA[1], SA[2], SA[3], SA[4], A_FindText, A_FindText, FindText)
         moving_X := Round(((LocPinX - gScreenCenter[1]) / MouseSpeed))
         moving_Y := Round(((LocPinY - gScreenCenter[2]) / MouseSpeed))
-        fMoveMouse(moving_X, moving_Y)
+        fMoveMouse(moving_X, -moving_Y)
     } Until (Time < TimePassed(CounterBefore))
     fBorder("CaptureLocPin", "Destroy")
 }

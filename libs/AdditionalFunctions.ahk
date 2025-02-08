@@ -79,7 +79,7 @@
             Send, {Blind}{%OperatorKey%}
             lSleep(1)
         }
-        fDebugGui("Edit", "Cancel Animation", TimePassed(CancelAnimation_Start))
+        fDebugGui("Edit", "Cancel Animation", TimePassed(CancelAnimation_Start) " ms")
     }
 
     InputTest() {
@@ -90,12 +90,12 @@
             TimeStamp(BeforeInput)
             Send, {Blind}{%InputTestKey%}
             TimeStamp(AfterInput)
-            fDebugGui("Edit", "Input Test", TimePassed(BeforeInput, AfterInput))
+            fDebugGui("Edit", "Input Test", TimePassed(BeforeInput, AfterInput) " ms")
             AverageInput += TimePassed(BeforeInput, AfterInput)
             Sleep, 1
             if (TimePassed(InputTest_Start,,"sec") >= 1) {
                 AverageInput := Round(AverageInput / A_Index, 3)
-                fDebugGui("Edit", "Input Test", AverageInput)
+                fDebugGui("Edit", "Input Test", AverageInput " ms")
                 Break
             } 
         }
