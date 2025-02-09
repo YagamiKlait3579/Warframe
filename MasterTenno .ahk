@@ -53,16 +53,16 @@
     ;--------------------------------------------------
     UpdateDGP({"Transparency" : gTransparency, "Blur" : gBlur, "Scale" : gInterfaceScale})
     GuiInGame("Start", "MainInterface")
-        Gui, MainInterface: Add, Text, xm ym +Center +Border cRed vAbility1,`  1  `
+        Gui, MainInterface: Add, Text, xm ym +Center +Border cRed vAbility1,`  %AbilityA_Key%  `
         Gui, MainInterface: Add, Text, x+ ym +Center +Border cFuchsia vTimer1, %PlaceForTheText%
         GuiControl, MainInterface: Text, Timer1, % gAbilityTimer.1
-        Gui, MainInterface: Add, Text, x+m ym +Center +Border cRed vAbility2,`  2  `
+        Gui, MainInterface: Add, Text, x+m ym +Center +Border cRed vAbility2,`  %AbilityB_Key%  `
         Gui, MainInterface: Add, Text, x+ ym +Center +Border cFuchsia vTimer2, %PlaceForTheText%
         GuiControl, MainInterface: Text, Timer2, % gAbilityTimer.2
-        Gui, MainInterface: Add, Text, x+m ym +Center +Border +Section cRed vAbility3,`  3  `
+        Gui, MainInterface: Add, Text, x+m ym +Center +Border +Section cRed vAbility3,`  %AbilityC_Key%  `
         Gui, MainInterface: Add, Text, x+ ym +Center +Border cFuchsia vTimer3, %PlaceForTheText%
         GuiControl, MainInterface: Text, Timer3, % gAbilityTimer.3
-        Gui, MainInterface: Add, Text, x+m ym +Center +Border cRed vAbility4,`  4  `
+        Gui, MainInterface: Add, Text, x+m ym +Center +Border cRed vAbility4,`  %AbilityD_Key%  `
         Gui, MainInterface: Add, Text, x+ ym +Center +Border cFuchsia vTimer4, %PlaceForTheText%
         GuiControl, MainInterface: Text, Timer4, % gAbilityTimer.4
         ;--------------------------------------------------
