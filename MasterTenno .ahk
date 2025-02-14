@@ -12,6 +12,12 @@
     BigTimeStepKey       = Shift
     SkillCastTime       := 1000   ; Время применения одной способности
     ;--------------------------------------------------
+    A_AbilityClamp      := false  ; Поменять нажатие способности A на зажатие (True — включено, False — выключено)
+    B_AbilityClamp      := false  ; Поменять нажатие способности B на зажатие (True — включено, False — выключено)
+    C_AbilityClamp      := false  ; Поменять нажатие способности C на зажатие (True — включено, False — выключено)
+    D_AbilityClamp      := false  ; Поменять нажатие способности D на зажатие (True — включено, False — выключено)
+    AbilityClamp_TIme   := 250    ; Время зажима способности (ms.)
+    ;--------------------------------------------------
     Exodia_ThrowingTime := 50     ; Время броска
     Exodia_LandingTime  := 450    ; Время приземления
     ExodiaSpamKey        = PgDn   ; Вкл\Выкл повторения бросков при зажатии клавиши
@@ -28,6 +34,8 @@
     ExodiaSpam := ExodiaSpam ? ExodiaSpam : 0  
     global A_AbilityKey := [AbilityA_Key, AbilityB_Key, AbilityC_Key, AbilityD_Key]
     global A_Activity := [0,0,0,0], A_Stamp := [], A_TimeEdit
+    global gAbilityClamp := [A_AbilityClamp, B_AbilityClamp, C_AbilityClamp, D_AbilityClamp]
+    
     
 ;;;;;;;;;; Hotkeys ;;;;;;;;;;
     Hotkey, *%StartKey%, ClassicExodia
@@ -112,7 +120,13 @@
         for A_Loop, A_key in A_Activity {
             if A_key && (TimePassed(A_Stamp[A_Loop]) > gAbilityTimer[A_Loop]) {
                 B_key := A_AbilityKey[A_Loop]
-                Send, {Blind}{%B_key%}
+                if gAbilityClamp[A_Loop] {
+                    Send, {Blind}{%B_key% Down}
+                    lSleep(AbilityClamp_TIme)
+                    Send, {Blind}{%B_key% Up}
+                } else {
+                    Send, {Blind}{%B_key%}
+                }
                 lSleep(SkillCastTime)
                 A_Stamp[A_Loop] := TimeStamp()
             }

@@ -32,8 +32,7 @@ AimLocPin(SearchArea, FindText, A_FindText = 0.30, MouseSpeed = 1) {
     SA := Array(gScreenCenter[1] - SearchArea, gScreenCenter[2] - SearchArea, gScreenCenter[1] + SearchArea, gScreenCenter[2] + SearchArea)
     fBorder("AimLocPin", {"Center" : SearchArea, "Color" : "Yellow"})
     Loop, {
-        FindText(LocPinX, LocPinY, SA[1], SA[2], SA[3], SA[4], A_FindText, A_FindText, FindText)
-        if (!LocPinX && !LocPinY) {
+        if !FindText(LocPinX, LocPinY, SA[1], SA[2], SA[3], SA[4], A_FindText, A_FindText, FindText) {
             fBorder("AimLocPin", "Destroy")
             Return 1
         }
