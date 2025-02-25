@@ -213,8 +213,10 @@
                 lSleep(150)
                 Send, {Blind}{%CrouchKey% Down}
                 lSleep(20)
-                Send, {Blind}{%JumpKey%}
-                lSleep(400) ; Время остановки прыжка оператора в нужной позиции (ms.)
+                Send, {Blind}{%JumpKey% Down}
+                lSleep(500) ; Время заряда прыжка оператора (влияет на дальность его прыжка) (ms.)
+                Send, {Blind}{%JumpKey% Up}
+                lSleep(200) ; Время остановки прыжка оператора в нужной позиции (ms.)
                 Send, {Blind}{%PrimFireKey%}{%CrouchKey% Up}
                 lSleep(20)
                 fMoveMouse(3660, 20) ; Поворот камеры в конечную точку  (x,y)
