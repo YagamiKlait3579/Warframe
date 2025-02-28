@@ -3,18 +3,25 @@
     #IfWinActive, Warframe
     global PWN := "Warframe" ; Program window name
     OnExit("BeforeExiting")
+    DllCall("ntdll\ZwSetTimerResolution","Int",5000,"Int",1,"Int*",MyCurrentTimerResolution)
 
 ;;;;;;;;;; Setting ;;;;;;;;;;
+    ;;;;; Nidus ;;;;;
+    SwitchNidusKey     = Up        ; Переключить скрипт на Нидуса
+    Minimap_Coords    := [30,130,140,190]   ; Координаты поиска противников на мини-карте
+    Enemies_Color     := "c80406"  ; Цвет противников на мини-карте (цвет в HEX формате)
+    Enemies_A_Color   := 10        ; Отклонения от оригинала цвета (от 0 до 255)
+    ;;;;; Nekros ;;;;;
     CutsceneTime      := 5100      ; Ожидание старта миссий (время заставки) (ms.)
     SwitchLeftKey      = Left      ; Переключить скрипт на прыжок в левую сторону
     SwitchRightKey     = Right     ; Переключить скрипт на прыжок в правую сторону
     AutoRepeat_Flag   := True      ; Авто повтор скрипта (True — включено, False — выключено)
-    ;;;;; Test Jump ;;;;;
-    TestJumpStartKey   = Numpad1   ; Тест прыжка в начале миссии
-    TestJumpEndKey     = Numpad2   ; Тест прыжка в конце миссии
-    ;;;;; Additional functions ;;;;;
     EndMission_Flag   := True      ; Авто сбор лута по окончанию миссии (True — включено, False — выключено)
     EndMission_Time   := 5100      ; Время на сбор лута
+    ;;;;; Test ;;;;;
+    TestNekrosStartKey = Numpad1   ; Тест прыжка в начале миссии
+    TestNekrosEndKey   = Numpad2   ; Тест прыжка в конце миссии
+    TestNidusKey       = Numpad3   ; Тест действий Нидуса
     ;;;;; Find Text ;;;;;
     EAR_A_FindText    := 0.20                  ; Разброс точности текста для библиотеки Find Text
     Text_Coords       := [820,150,1100,210]    ; Координаты текста о статусе миссии
@@ -32,11 +39,16 @@
 ;;;;;;;;;; Hotkeys ;;;;;;;;;;
     Hotkey, *%StartKey%, BaseScript
 
-    fHotkey := Func("TestJump").Bind("Start")
-    Hotkey, *%TestJumpStartKey%, %fHotkey%
-    fHotkey := Func("TestJump").Bind("End")
-    Hotkey, *%TestJumpEndKey%, %fHotkey%
+    fHotkey := Func("Nidus").Bind("Test")
+    Hotkey, *%TestNidusKey%, %fHotkey%
 
+    fHotkey := Func("TestJump").Bind("Start")
+    Hotkey, *%TestNekrosStartKey%, %fHotkey%
+    fHotkey := Func("TestJump").Bind("End")
+    Hotkey, *%TestNekrosEndKey%, %fHotkey%
+
+    fHotkey := Func("SwitchMethod").Bind("Nidus")
+    Hotkey, *%SwitchNidusKey% , %fHotkey%
     fHotkey := Func("SwitchMethod").Bind("Left")
     Hotkey, *%SwitchLeftKey% , %fHotkey%
     fHotkey := Func("SwitchMethod").Bind("Right")
@@ -51,7 +63,7 @@
         Gui, MainInterface: Add, Text, xm ym +Right,` Endo AutoRun:
         Gui, MainInterface: Add, Text, x+m +Center +Border cRed vScriptStatus_Gui,` Disabled `
         Gui, MainInterface: Add, Text, x+ +Center +Border cFuchsia vTime_Gui, %PlaceForTheText%
-        GuiControl, MainInterface: Text, Time_Gui, % ((EAR_Method = "Left") ? " <== " : " " ) EAR_Method ((EAR_Method = "Right") ? " ==> " : " " )
+        GuiControl, MainInterface: Text, Time_Gui, %EAR_Method%
     GuiInGame("End", "MainInterface", {"ratio" : [GuiPositionX,GuiPositionY]})
     fSuspendGui("On", "MainInterface")
     if DebugGui
@@ -65,7 +77,7 @@
         global
         if !A_ScriptStatus {
             A_ScriptStatus := !A_ScriptStatus
-            SetTimer, EndoAutoRun, 1
+            SetTimer, EndoAutoRun, -1
             GuiControl, MainInterface: Text, ScriptStatus_Gui, Enabled
             GuiControl, MainInterface: +cLime +Redraw , ScriptStatus_Gui
         } else 
@@ -75,19 +87,20 @@
     SwitchMethod(key = "") {
         global
         switch key {
+            case "Nidus" : EAR_Method := "Nidus"
             case "Left"  : EAR_Method := "Left"
             case "Right" : EAR_Method := "Right"
             Default : EAR_Method := "Left" ? "Right" : "Left"
         }
-        GuiControl, MainInterface: Text, Time_Gui, % ((EAR_Method = "Left") ? " <== " : " " ) EAR_Method ((EAR_Method = "Right") ? " ==> " : " " )
+        GuiControl, MainInterface: Text, Time_Gui, %EAR_Method%
     }
 
     TestJump(param) {
         global
         BlockInput, On
         switch param {
-            case "Start" : Run_Start(EAR_Method)
-            case "End"   : Run_End(EAR_Method)
+            case "Start" : Nekros_Start(EAR_Method)
+            case "End"   : Nekros_End(EAR_Method)
         }
         BlockInput, Off
     }
@@ -96,35 +109,72 @@
     EndoAutoRun() {
         global
         local A_Start
-        fBorder("MissionStatus", {"Coords" : Text_Coords, "Color" : "Yellow", "Size" : 2})
-        Loop
-            if FindText(,, Text_Coords[1], Text_Coords[2], Text_Coords[3], Text_Coords[4], EAR_A_FindText, EAR_A_FindText, Text_Start1)
-                Break
-        TimeStamp(A_Start)
-        fBorder("MissionStatus","Destroy")
-        BlockInput, On
-        lSleep(CutsceneTime)
-        Run_Start(EAR_Method)
-        BlockInput, Off
-        if EndMission_Flag { 
-            fBorder("MissionStatus", {"Coords" : Text_Coords, "Color" : "Lime"})
-            Loop
-                if FindText(,, Text_Coords[1], Text_Coords[2], Text_Coords[3], Text_Coords[4], EAR_A_FindText, EAR_A_FindText, Text_End)
-                    Break
-            fBorder("MissionStatus","Destroy")
-            BlockInput, On
-            Run_End(EAR_Method)
-            BlockInput, Off
-            fDebugGui("Edit", "Mission time", Round(TimePassed(A_Start,, "sec")) " sec.")
+        switch EAR_Method {
+            case "Nidus" : {
+                fBorder("Minimap", {"Coords" : Minimap_Coords, "Color" : "Yellow", "Size" : 2})
+                Loop
+                    Nidus()
+            }
+            case "Left", "Right" : {
+                fBorder("MissionStatus", {"Coords" : Text_Coords, "Color" : "Yellow", "Size" : 2})
+                Loop, {
+                    if FindText(,, Text_Coords[1], Text_Coords[2], Text_Coords[3], Text_Coords[4], EAR_A_FindText, EAR_A_FindText, Text_Start1) {
+                        TimeStamp(A_Start)
+                        BlockInput, On
+                        lSleep(CutsceneTime)
+                        Nekros_Start(EAR_Method)
+                        BlockInput, Off
+                        if (!AutoRepeat_Flag && !EndMission_Flag) {
+                            fBorder("MissionStatus","Destroy")
+                            Break
+                        }
+                    }
+                    if EndMission_Flag { 
+                        if FindText(,, Text_Coords[1], Text_Coords[2], Text_Coords[3], Text_Coords[4], EAR_A_FindText, EAR_A_FindText, Text_End) {
+                            BlockInput, On
+                            Nekros_End(EAR_Method)
+                            BlockInput, Off
+                            fDebugGui("Edit", "Mission time", Round(TimePassed(A_Start,, "sec")) " sec.")
+                            if !AutoRepeat_Flag {
+                                fBorder("MissionStatus","Destroy")
+                                Break
+                            }
+                        }
+                    }
+                }
+            }
         }
-        if !AutoRepeat_Flag {
-            SetTimer, EndoAutoRun, Off
-            GuiControl, MainInterface: Text, ScriptStatus_Gui, Disabled
-            GuiControl, MainInterface: +cRed +Redraw , ScriptStatus_Gui
-        }
+        GuiControl, MainInterface: Text, ScriptStatus_Gui, Disabled
+        GuiControl, MainInterface: +cRed +Redraw , ScriptStatus_Gui
     }
 
-    Run_Start(param) {
+;;;;;;;;;; Nidus ;;;;;;;;;;
+    Nidus(param = "") {
+        global
+            if (param != "Test")
+                Loop 
+                    PixelSearch,,, Minimap_Coords[1], Minimap_Coords[2], Minimap_Coords[3], Minimap_Coords[4], "0x"Enemies_Color, Enemies_A_Color, Fast RGB
+                Until !ErrorLevel
+                fBorder("Minimap", {"EditColor" : "Lime"})
+                fMoveMouse(-2800, -100) ; Поворот камеры в сторону броска первой личинки (x,y)
+                lSleep(2000) ; Ждем появления всех противников (ms.)
+                Send, {Blind}{%AbilityB_Key%}
+                lSleep(500) ; Время через которое остановить личинку (ms.)
+                Send, {Blind}{%AbilityB_Key%}
+                lSleep(1000) ; Время через которое подорвать личинку (ms.)
+                Send, {Blind}{%AbilityB_Key%}
+                lSleep(1000) ; Ждем исчезновения первой личинки (ms.)
+                Loop, 3
+                    fMoveMouse(0, -gscreen[2]), lSleep(10)
+                Send, {Blind}{%AbilityB_Key%}
+                lSleep(1500) ; Время через которое подорвать личинку (ms.)
+                Send, {Blind}{%AbilityB_Key%}
+                fMoveMouse(2800, 1900) ; Поворот камеры в стартовую позицию (x,y)
+                fBorder("Minimap", {"EditColor" : "Yellow"})
+    }
+
+;;;;;;;;;; Nekros ;;;;;;;;;;
+    Nekros_Start(param) {
         global
         local A_Start
         TimeStamp(A_Start)
@@ -141,7 +191,7 @@
                 Send, {Blind}{%CrouchKey% Down}
                 lSleep(20)
                 Send, {Blind}{%JumpKey%}{%CrouchKey% Up}
-                lSleep(1500) ; Ждем приземления после второго прыжка (ms.)
+                lSleep(1750) ; Ждем приземления после второго прыжка (ms.)
                 Loop, 3
                     fMoveMouse(0, -gscreen[2]), lSleep(10)
                 ;--------------------------------------------------
@@ -157,7 +207,7 @@
                 lSleep(20)
                 Send, {Blind}{%OperatorKey%}
                 fMoveMouse(3900, 2200)  ; Поворот камеры в сторону прыжка оператора (x,y)
-                lSleep(150)
+                lSleep(170)
                 Send, {Blind}{%CrouchKey% Down}
                 lSleep(20)
                 Send, {Blind}{%JumpKey% Down}
@@ -210,7 +260,7 @@
                 lSleep(20)
                 Send, {Blind}{%OperatorKey%}
                 fMoveMouse(-2920, 0) ; Поворот камеры в сторону прыжка оператора (x,y)
-                lSleep(150)
+                lSleep(170)
                 Send, {Blind}{%CrouchKey% Down}
                 lSleep(20)
                 Send, {Blind}{%JumpKey% Down}
@@ -225,7 +275,7 @@
         }
     }
 
-    Run_End(param) {
+    Nekros_End(param) {
         global
         local A_Start
         TimeStamp(A_Start)
@@ -250,7 +300,7 @@
                 Send, {Blind}{%PrimFireKey%}{%CrouchKey% Up}
                 lSleep(20)
                 Send, {Blind}{%OperatorKey%}
-                lSleep(150)
+                lSleep(170)
                 fMoveMouse(0, -500) ; Опускаем камеру в сторону пола для сбора лута (x,y)
                 lSleep(20)
             }
@@ -270,7 +320,7 @@
                 Send, {Blind}{%PrimFireKey%}{%CrouchKey% Up}
                 lSleep(20)
                 Send, {Blind}{%OperatorKey%}
-                lSleep(150)
+                lSleep(170)
                 fMoveMouse(0, -500) ; Опускаем камеру в сторону пола для сбора лута (x,y)
                 lSleep(20)
             }
