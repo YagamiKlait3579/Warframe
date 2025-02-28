@@ -3,7 +3,6 @@
     #IfWinActive, Warframe
     global PWN := "Warframe" ; Program window name
     OnExit("BeforeExiting")
-    DllCall("ntdll\ZwSetTimerResolution","Int",5000,"Int",1,"Int*",MyCurrentTimerResolution)
 
 ;;;;;;;;;; Setting ;;;;;;;;;;
     ;;;;; Nidus ;;;;;
