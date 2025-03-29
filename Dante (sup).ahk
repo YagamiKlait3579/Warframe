@@ -1,5 +1,6 @@
 ﻿;;;;;;;;;; Loading ;;;;;;;;;;
-    #include %A_Scriptdir%\libs\BaseLibs\Header.ahk
+    #include %A_Scriptdir%\libs\CoreLibsFor_AHK\BaseLibs\Header.ahk
+    ;--------------------------------------------------
     #IfWinActive, Warframe
     global PWN := "Warframe" ; Program window name
     OnExit("BeforeExiting")
