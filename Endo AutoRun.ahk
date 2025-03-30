@@ -60,7 +60,7 @@
     ;--------------------------------------------------
     UpdateDGP({"Transparency" : gTransparency, "Blur" : gBlur, "Scale" : gInterfaceScale})
     GuiInGame("Start", "MainInterface")
-        Gui, MainInterface: Add, Text, xm ym +Right,` Endo AutoRun:
+        Gui, MainInterface: Add, Text, xm ym +Right, % SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1)
         Gui, MainInterface: Add, Text, x+m +Center +Border cRed vScriptStatus_Gui,` Disabled `
         Gui, MainInterface: Add, Text, x+ +Center +Border cFuchsia vTime_Gui, %PlaceForTheText%
         GuiControl, MainInterface: Text, Time_Gui, %EAR_Method%

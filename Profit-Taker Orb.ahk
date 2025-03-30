@@ -25,7 +25,7 @@
     ;--------------------------------------------------
     UpdateDGP({"Transparency" : gTransparency, "Blur" : gBlur, "Scale" : gInterfaceScale})
     GuiInGame("Start", "MainInterface")
-        Gui, MainInterface: Add, Text, xm ym +Center, Profit-Taker Orb
+        Gui, MainInterface: Add, Text, xm ym +Center, % SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1)
         Gui, MainInterface: Add, Text, x+m +Center +Border cRed +Section vScriptStatus_Gui, %PlaceForTheText%
         GuiControl, MainInterface: Text, ScriptStatus_Gui, Disabled
         Gui, MainInterface: Add, Text, x+m +Center, FPS:
