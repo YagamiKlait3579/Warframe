@@ -46,3 +46,8 @@
         Run, "%GetProgramPath%" "%A_ScriptDir%\%Name%"
         ExitApp
     }
+
+;;;;;;;;;; Exit ;;;;;;;;;;
+    SwitchingMacrosGuiClose() {
+        Gui, SwitchingMacros: Destroy
+    }
