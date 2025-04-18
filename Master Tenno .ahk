@@ -30,12 +30,12 @@
     LoadIniSection(FP_SavedSettings, "Master Tenno")
     ;--------------------------------------------------
     global gAbilityTimer := []
-    for A_Loop, A_key in [AbilityTimer_A, AbilityTimer_B, AbilityTimer_C, AbilityTimer_D]
+    for A_Loop, A_key in [AbilityTimer_A, AbilityTimer_B, AbilityTimer_C, AbilityTimer_D, OperatorTimer]
         gAbilityTimer.Push(A_key ? A_key : 1000)
     ExodiaSpam := ExodiaSpam ? ExodiaSpam : 0  
-    global A_AbilityKey := [AbilityA_Key, AbilityB_Key, AbilityC_Key, AbilityD_Key]
-    global A_Activity := [0,0,0,0], A_Stamp := [], A_TimeEdit
-    global gAbilityClamp := [A_AbilityClamp, B_AbilityClamp, C_AbilityClamp, D_AbilityClamp]
+    global A_AbilityKey := [AbilityA_Key, AbilityB_Key, AbilityC_Key, AbilityD_Key, OperatorKey]
+    global A_Activity := [0,0,0,0,0], A_Stamp := [], A_TimeEdit
+    global gAbilityClamp := [A_AbilityClamp, B_AbilityClamp, C_AbilityClamp, D_AbilityClamp, false]
     
     
 ;;;;;;;;;; Hotkeys ;;;;;;;;;;
@@ -68,12 +68,15 @@
         Gui, MainInterface: Add, Text, x+m ym +Center +Border cRed vAbility2,`  %AbilityB_Key%  `
         Gui, MainInterface: Add, Text, x+ ym +Center +Border cFuchsia vTimer2, %PlaceForTheText%
         GuiControl, MainInterface: Text, Timer2, % gAbilityTimer.2
-        Gui, MainInterface: Add, Text, x+m ym +Center +Border +Section cRed vAbility3,`  %AbilityC_Key%  `
+        Gui, MainInterface: Add, Text, x+m ym +Center +Border cRed vAbility3,`  %AbilityC_Key%  `
         Gui, MainInterface: Add, Text, x+ ym +Center +Border cFuchsia vTimer3, %PlaceForTheText%
         GuiControl, MainInterface: Text, Timer3, % gAbilityTimer.3
-        Gui, MainInterface: Add, Text, x+m ym +Center +Border cRed vAbility4,`  %AbilityD_Key%  `
+        Gui, MainInterface: Add, Text, x+m ym +Center +Border +Section cRed vAbility4,`  %AbilityD_Key%  `
         Gui, MainInterface: Add, Text, x+ ym +Center +Border cFuchsia vTimer4, %PlaceForTheText%
         GuiControl, MainInterface: Text, Timer4, % gAbilityTimer.4
+        Gui, MainInterface: Add, Text, x+m ym +Center +Border cRed vAbility5,`  %OperatorKey%  `
+        Gui, MainInterface: Add, Text, x+ ym +Center +Border cFuchsia vTimer5, %PlaceForTheText%
+        GuiControl, MainInterface: Text, Timer5, % gAbilityTimer.5
         ;--------------------------------------------------
         Gui, MainInterface: Add, Text, xm y+m +Right,` Exodia:
         Gui, MainInterface: Add, Text, x+m +Center +Border cYellow vExodiaSpam_Gui, %PlaceForTheText2%
@@ -137,10 +140,10 @@
 ;;;;;;;;;; Control Functions ;;;;;;;;;;
     StartStop(key) {
         A_Activity[key] := !A_Activity[key]
-        Loop, 4
+        Loop, 5
             GuiControl, % "MainInterface: " (A_Activity[A_Index] ? "+cLime" : "+cRed") " +Redraw", % "Ability" A_Index
         A_Stamp[key] := 0
-        if A_Activity.1 || A_Activity.2 || A_Activity.3 || A_Activity.4
+        if (A_Activity.1 || A_Activity.2 || A_Activity.3 || A_Activity.4 || A_Activity.5)
             SetTimer, BaseScript, 1, -1
         else
             SetTimer, BaseScript, off
@@ -152,7 +155,7 @@
     Return
 
     TimeEdit(key) {
-        Loop, 4
+        Loop, 5
             GuiControl, % "MainInterface: +cFuchsia +Redraw", % "Timer" A_Index
         A_TimeEdit := (A_TimeEdit = key) ? "" : key
         if A_TimeEdit
@@ -195,7 +198,7 @@
 ;;;;;;;;;; Exit ;;;;;;;;;;
     BeforeExiting() {
         global
-        for A_Loop, A_key in ["AbilityTimer_A", "AbilityTimer_B", "AbilityTimer_C", "AbilityTimer_D"]
+        for A_Loop, A_key in ["AbilityTimer_A", "AbilityTimer_B", "AbilityTimer_C", "AbilityTimer_D", "OperatorTimer"]
             IniWrite, % gAbilityTimer[A_Loop] , %FP_SavedSettings%, Master Tenno, %A_key%
         IniWrite, %ExodiaSpam%, %FP_SavedSettings%, Master Tenno, ExodiaSpam
     }
