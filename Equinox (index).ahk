@@ -104,9 +104,7 @@ Return
         GuiControl, EditTimeGui: Text, T1, Accept
         w1 := A_ScreenWidth / 3
         h1 := (w1 / 16) * 9
-
         Gui, EditTimeGui: Show, w%w1% h%h1%, Auto exit from the mission
-        ;WinGetPos, x1, y1, w1, h1, ahk_id %EditTimeGui%
         Gui, EditTimeGui: Add, Picture, % "x0 y0 w" w1 " h-1", % "HBITMAP:" ReadImages(CheckingFiles(,"Warframe_Images.dll"), "Equinox_Index")
     }
 
