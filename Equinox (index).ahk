@@ -70,38 +70,44 @@ Return
         local FontSize := Round(((13 * gFontScaling) * gDPI) * (0.01 * gInterfaceScale))
         local Margin   := [Round(FontSize * 1.25), Round(FontSize * 0.75)]
         Gui, EditTimeGui: +AlwaysOnTop +LastFound -DPIScale +Border -MinimizeBox +HwndEditTimeGui
-        Gui, EditTimeGui: Color, 101010
+        Gui, EditTimeGui: Color, 151515
         Gui, EditTimeGui: Margin, % Margin.1, % Margin.2
         Gui, EditTimeGui: Font, % " s"FontSize " q3", MS Sans Serif
         ;--------------------------------------------------
         local x1, y1, w1, h1
-        local Text := " seconds "
+        local Text := "  seconds  "
         local RemainingTime := TimeConverter("Time", gExitMissionStamp)
-        Gui, EditTimeGui: Add, Text, xm ym ce16419 +center +Border vT_Hour +HwndT_Hour, %Text%
+        Gui, EditTimeGui: Add, Text, xm ym cffc864 +center +Border vT_Hour +HwndT_Hour, %Text%
         GuiControl, EditTimeGui: Text, T_Hour, Hour
-        Gui, EditTimeGui: Add, Text, x+m ym ce16419 +center +Border vT_Minutes +HwndT_Minutes, %Text%
-        GuiControl, EditTimeGui: Text, T_Minutes, minutes
-        Gui, EditTimeGui: Add, Text, x+m ym ce16419 +center +Border vT_Seconds +HwndT_Seconds, %Text%
-        GuiControl, EditTimeGui: Text, T_Seconds, seconds
+        Gui, EditTimeGui: Add, Text, x+m ym cffc864 +center +Border vT_Minutes +HwndT_Minutes, %Text%
+        GuiControl, EditTimeGui: Text, T_Minutes, Minutes
+        Gui, EditTimeGui: Add, Text, x+m ym cffc864 +center +Border vT_Seconds +HwndT_Seconds, %Text%
+        GuiControl, EditTimeGui: Text, T_Seconds, Seconds
             ;--------------------------------------------------
             WinGetPos, x1, y1, w1, h1, % "ahk_id" T_Hour
-            Gui, EditTimeGui: Add, Edit, xm y+m +Limit2 +Number +Right -TabStop vEditHour, 0000
+            Gui, EditTimeGui: Add, Edit, xm y+m +Limit2 +Number +Right -TabStop vEditHour, 00000
             Gui, EditTimeGui: Add, UpDown, range0-12
             GuiControl, EditTimeGui: Text, EditHour, % RemainingTime.1
             ;--------------------------------------------------
             WinGetPos, x1, y1, w1, h1, % "ahk_id" T_Minutes
-            Gui, EditTimeGui: Add, Edit, x%x1% yp +Limit2 +Number +Right -TabStop vEditMinutes, 0000
+            Gui, EditTimeGui: Add, Edit, x%x1% yp +Limit2 +Number +Right -TabStop vEditMinutes, 00000
             Gui, EditTimeGui: Add, UpDown, range0-59
             GuiControl, EditTimeGui: Text, EditMinutes, % RemainingTime.2
             ;--------------------------------------------------
             WinGetPos, x1, y1, w1, h1, % "ahk_id" T_Seconds
-            Gui, EditTimeGui: Add, Edit, x%x1% yp +Limit2 +Number +Right -TabStop vEditSeconds, 0000
+            Gui, EditTimeGui: Add, Edit, x%x1% yp +Limit2 +Number +Right -TabStop vEditSeconds, 00000
             Gui, EditTimeGui: Add, UpDown, range0-59
             GuiControl, EditTimeGui: Text, EditSeconds, % RemainingTime.3
         ;--------------------------------------------------
         w1 := GuiLineWidth(T_Hour, T_Seconds)
-        Gui, EditTimeGui: Add, Text, xm y+m w%w1% ce16419 +center +Border gUpdateValues, Accept
-        Gui, EditTimeGui: Show,, Auto exit from the mission
+        Gui, EditTimeGui: Add, Text, xm y+m w%w1% cffc864 +center +Border +0x00000201 vT1 gUpdateValues, `n
+        GuiControl, EditTimeGui: Text, T1, Accept
+        w1 := A_ScreenWidth / 3
+        h1 := (w1 / 16) * 9
+
+        Gui, EditTimeGui: Show, w%w1% h%h1%, Auto exit from the mission
+        ;WinGetPos, x1, y1, w1, h1, ahk_id %EditTimeGui%
+        Gui, EditTimeGui: Add, Picture, % "x0 y0 w" w1 " h-1", % "HBITMAP:" ReadImages(CheckingFiles(,"Warframe_Images.dll"), "Equinox_Index")
     }
 
     UpdateValues(param = "") {
