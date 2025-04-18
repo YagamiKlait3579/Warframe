@@ -18,7 +18,7 @@
 
 ;;;;;;;;;; Variables ;;;;;;;;;;
     CheckingFiles(,"SavedSettings.ini")
-    LoadIniSection(FP_SavedSettings, "Equinox (index)")
+    LoadIniSection(FP_SavedSettings, SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1))
     ;--------------------------------------------------
     global A_ScriptStatus := 0
     global RoundFlag, StatusMission, ExitMissionFlag, ExitMissionFlag2, gExitMissionStamp
@@ -77,11 +77,11 @@ Return
         local x1, y1, w1, h1
         local Text := "  seconds  "
         local RemainingTime := TimeConverter("Time", gExitMissionStamp)
-        Gui, EditTimeGui: Add, Text, xm ym cffc864 +center +Border vT_Hour +HwndT_Hour, %Text%
+        Gui, EditTimeGui: Add, Text, xm ym cFFD700 +center +Border vT_Hour +HwndT_Hour, %Text%
         GuiControl, EditTimeGui: Text, T_Hour, Hour
-        Gui, EditTimeGui: Add, Text, x+m ym cffc864 +center +Border vT_Minutes +HwndT_Minutes, %Text%
+        Gui, EditTimeGui: Add, Text, x+m ym cFFD700 +center +Border vT_Minutes +HwndT_Minutes, %Text%
         GuiControl, EditTimeGui: Text, T_Minutes, Minutes
-        Gui, EditTimeGui: Add, Text, x+m ym cffc864 +center +Border vT_Seconds +HwndT_Seconds, %Text%
+        Gui, EditTimeGui: Add, Text, x+m ym cFFD700 +center +Border vT_Seconds +HwndT_Seconds, %Text%
         GuiControl, EditTimeGui: Text, T_Seconds, Seconds
             ;--------------------------------------------------
             WinGetPos, x1, y1, w1, h1, % "ahk_id" T_Hour
@@ -100,7 +100,7 @@ Return
             GuiControl, EditTimeGui: Text, EditSeconds, % RemainingTime.3
         ;--------------------------------------------------
         w1 := GuiLineWidth(T_Hour, T_Seconds)
-        Gui, EditTimeGui: Add, Text, xm y+m w%w1% cffc864 +center +Border +0x00000201 vT1 gUpdateValues, `n
+        Gui, EditTimeGui: Add, Text, xm y+m w%w1% cFFD700 +center +Border +0x00000201 vT1 gUpdateValues, `n
         GuiControl, EditTimeGui: Text, T1, Accept
         w1 := A_ScreenWidth / 3
         h1 := (w1 / 16) * 9

@@ -6,141 +6,131 @@
     OnExit("BeforeExiting")
 
 ;;;;;;;;;; Setting ;;;;;;;;;;
-    StartAbilityKey      = Shift  ; Нажатие этой клавиши + способность включает повтор этой способности
-    EditTimeKey          = Alt    ; Нажатие этой клавиши + способность включает режим изменения времени этой способности
-    TimeStep            := 100    ; Шаг изменение времени для способности
-    BigTimeStep         := 1000   ; Шаг изменение времени для способности при удержании клавиши BigTimeStepKey
-    BigTimeStepKey       = Shift
-    SkillCastTime       := 1000   ; Время применения одной способности
-    ;--------------------------------------------------
-    A_Pauses            := 100    ; Паузы между выстрелами (при зажатии StartKey из файла Settings)
-
+    SkillCastTime         := 1000   ; Время применения одной способности (ms)
+    EnergizedMunitionsKey := 4      ; Клавиша на которой привита способность "Энергетические боеприпасы" от гельминта
+    ;;; Saryn
+    DurationOfSpores      := 85     ; Длительность "Дозы яда"
+    DurationOfToxicLash   := 95     ; Длительность "Токсичный хлыст"
+    ;;; Mirage
+    DurationOfEclipse     := 53     ; Длительность способности "Затмение" (sec)
+    
 ;;;;;;;;;; Variables ;;;;;;;;;;
     CheckingFiles(,"SavedSettings.ini")
-    LoadIniSection(FP_SavedSettings, "Arbitrations")
+    LoadIniSection(FP_SavedSettings, SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1))
     ;--------------------------------------------------
-    global gAbilityTimer := []
-    for A_Loop, A_key in [AbilityTimer_A, AbilityTimer_B, AbilityTimer_C, AbilityTimer_D]
-        gAbilityTimer.Push(A_key ? A_key : 1000)
-    global A_AbilityKey := [AbilityA_Key, AbilityB_Key, AbilityC_Key, AbilityD_Key]
-    global A_Activity := [0,0,0,0], A_Stamp := [], A_TimeEdit
-    
+    global RunningProfile, RunningFlag := False
+    ReloadFlag := ReloadFlag ? ReloadFlag : False
+    ;--------------------------------------------------
+    if !ReloadFlag
+        ChoosingProfile()
+    if !RunningProfile {
+        MsgBox, 16, % SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1), Ошибка выбора профиля.`nProfile selection error.
+        ExitApp
+    }
+
 ;;;;;;;;;; Hotkeys ;;;;;;;;;;
-    Hotkey, *%StartKey%, Arbitrations
-
-    for A_Loop, A_key in A_AbilityKey {
-        fHotkey := Func("TimeEdit").Bind(A_Loop)
-        Hotkey, %EditTimeKey% & %A_key%, %fHotkey%
-    } 
-    for A_Loop, A_key in A_AbilityKey {
-        fHotkey := Func("StartStop").Bind(A_Loop)
-        Hotkey, %StartAbilityKey% & %A_key%, %fHotkey%
-    } 
-    fHotkey := ""
-
-    Hotkey, *%IncreaseKey%, IncreaseTiming
-    Hotkey, *%DecreaseKey%, DecreaseTiming
+    Hotkey, *%StartKey%, BaseScript
 
 ;;;;;;;;;; Gui ;;;;;;;;;;
-    PlaceForTheText := "999999"
+    PlaceForTheText := " Ширина самого длинного текста "
     ;--------------------------------------------------
     UpdateDGP({"Transparency" : gTransparency, "Blur" : gBlur, "Scale" : gInterfaceScale})
     GuiInGame("Start", "MainInterface")
-        Gui, MainInterface: Add, Text, xm ym +Center +Border cRed vAbility1,`  1  `
-        Gui, MainInterface: Add, Text, x+ ym +Center +Border cFuchsia vTimer1, %PlaceForTheText%
-        GuiControl, MainInterface: Text, Timer1, % gAbilityTimer.1
-        Gui, MainInterface: Add, Text, x+m ym +Center +Border cRed vAbility2,`  2  `
-        Gui, MainInterface: Add, Text, x+ ym +Center +Border cFuchsia vTimer2, %PlaceForTheText%
-        GuiControl, MainInterface: Text, Timer2, % gAbilityTimer.2
-        Gui, MainInterface: Add, Text, x+m ym +Center +Border +Section cRed vAbility3,`  3  `
-        Gui, MainInterface: Add, Text, x+ ym +Center +Border cFuchsia vTimer3, %PlaceForTheText%
-        GuiControl, MainInterface: Text, Timer3, % gAbilityTimer.3
-        Gui, MainInterface: Add, Text, x+m ym +Center +Border cRed vAbility4,`  4  `
-        Gui, MainInterface: Add, Text, x+ ym +Center +Border cFuchsia vTimer4, %PlaceForTheText%
-        GuiControl, MainInterface: Text, Timer4, % gAbilityTimer.4
+        Gui, MainInterface: Add, Text, xm ym +Center vT1, % SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1) "( " RunningProfile " )"
+        Gui, MainInterface: Add, Text, x+m +Center +Border cRed +Section vScriptStatus_Gui,` Disabled `
     GuiInGame("End", "MainInterface", {"ratio" : [GuiPositionX,GuiPositionY]})
     fSuspendGui("On", "MainInterface")
     if DebugGui
         fDebugGui("Create", MainInterface)
     if HideTheInterface
-        SetTimer, ShowHideGui , 250, -2
-    Return
+        SetTimer, ShowHideGui , 250, -1
+Return
+
+;;;;;;;;;; Gui functions ;;;;;;;;;;
+    ChoosingProfile() {
+        global
+        local FontSize := Round(((15 * gFontScaling) * gDPI) * (0.01 * gInterfaceScale))
+        local Margin   := [Round(FontSize * 1.25), Round(FontSize * 0.75)]
+        Gui, ChoosingProfile: +AlwaysOnTop +LastFound -DPIScale +Border -MinimizeBox +HwndChoosingProfile
+        Gui, ChoosingProfile: Color, 101010
+        Gui, ChoosingProfile: Margin, % Margin.1, % Margin.2
+        Gui, ChoosingProfile: Font, % " s"FontSize " q3", MS Sans Serif
+        ;--------------------------------------------------
+        local Text := " Name warframe "
+        local funcObj
+        for A_Loop, A_key in ["Saryn", "Mirage"] {
+            funcObj := Func("ProfileUpload").Bind(A_key)
+            Gui, ChoosingProfile: Add, Text,% " xm y+m cFFD700 +Center +Border v" A_key "_GUI", %Text%
+            GuiControl, ChoosingProfile: Text, %A_key%_GUI , %A_key%
+            GuiControl, ChoosingProfile: +g, %A_key%_GUI, %funcObj%         
+        }
+        local w1, h1
+        w1 := A_ScreenWidth / 4
+        h1 := (w1 / 16) * 9
+        Gui, ChoosingProfile: Show, w%w1% h%h1%, Arbitrations profile
+        Gui, ChoosingProfile: Add, Picture, % "x0 y0 w" w1 " h-1", % "HBITMAP:" ReadImages(CheckingFiles(,"Warframe_Images.dll"), "Arbitrations")
+        Loop, {
+            lSleep(1)
+        } Until RunningFlag
+    }
+
+    ProfileUpload(param) {
+        global
+        RunningFlag := True
+        RunningProfile := param
+        Gui, ChoosingProfile: Destroy
+    }
+
+    ChoosingProfileGuiClose() {
+        Gui, ChoosingProfile: Destroy
+        ExitApp
+    }
 
 ;;;;;;;;;; Scripts ;;;;;;;;;;
-    Arbitrations:
-        While GetKeyState(StartKey, "p"){
-            Send, {Blind}{%PrimFireKey%}
-            lSleep(2)
-        }
-    Return
-
-    BaseScript:
-        for A_Loop, A_key in A_Activity {
-            if A_key && (TimePassed(A_Stamp[A_Loop]) > gAbilityTimer[A_Loop]) {
-                B_key := A_AbilityKey[A_Loop]
-                Send, {Blind}{%B_key%}
-                lSleep(SkillCastTime)
-                A_Stamp[A_Loop] := TimeStamp()
+    BaseScript() {
+        global
+        static A_Stamp := A_Stamp ? A_Stamp : 1
+        static B_Stamp := B_Stamp ? B_Stamp : 1
+        GuiControl, MainInterface: Text, ScriptStatus_Gui, Enabled
+        GuiControl, MainInterface: +cLime +Redraw , ScriptStatus_Gui
+        While GetKeyState(StartKey, "p") {
+            switch RunningProfile {
+                case "Saryn" : {
+                    if (WorldTimePassed(B_Stamp,, "sec") > DurationOfSpores) {
+                        WorldTimeStamp(B_Stamp)
+                        lSleep(SkillCastTime)
+                        Send, {Blind}{%AbilityA_Key% Down}
+                        lSleep(250)
+                        Send, {Blind}{%AbilityA_Key% Up}
+                    }
+                    if (WorldTimePassed(A_Stamp,, "sec") > DurationOfToxicLash) {
+                        WorldTimeStamp(A_Stamp)
+                        lSleep(SkillCastTime)
+                        Send, {Blind}{%AbilityC_Key%}
+                    }
+                }
+                case "Mirage" : {
+                    if (WorldTimePassed(A_Stamp,, "sec") > DurationOfEclipse) {
+                        WorldTimeStamp(A_Stamp)
+                        lSleep(SkillCastTime)
+                        Send, {Blind}{%AbilityC_Key%}
+                    }
+                    lSleep(20)
+                    Send, {Blind}{%AbilityA_Key%}
+                }
             }
+            lSleep(20)
+            Send, {Blind}{%EnergizedMunitionsKey%}
+            lSleep(20)
+            Send, {Blind}{%PrimFireKey%}
         }
-    Return
-
-;;;;;;;;;; Control Functions ;;;;;;;;;;
-    StartStop(key) {
-        A_Activity[key] := !A_Activity[key]
-        Loop, 4
-            GuiControl, % "MainInterface: " (A_Activity[A_Index] ? "+cLime" : "+cRed") " +Redraw", % "Ability" A_Index
-        A_Stamp[key] := 0
-        if A_Activity.1 || A_Activity.2 || A_Activity.3 || A_Activity.4
-            SetTimer, BaseScript, 1, -1
-        else
-            SetTimer, BaseScript, off
+        GuiControl, MainInterface: Text, ScriptStatus_Gui, Disabled
+        GuiControl, MainInterface: +cRed +Redraw , ScriptStatus_Gui
     }
-
-    TimeEdit(key) {
-        Loop, 4
-            GuiControl, % "MainInterface: +cFuchsia +Redraw", % "Timer" A_Index
-        A_TimeEdit := (A_TimeEdit = key) ? "" : key
-        if A_TimeEdit
-            GuiControl, % "MainInterface: +cYellow +Redraw", % "Timer" key
-    }
-
-;;;;;;;;;; Time management ;;;;;;;;;;
-    IncreaseTiming:
-        if !A_TimeEdit {
-            Send, {Blind}{%IncreaseKey%}
-            Return
-        }
-        if GetKeyState(BigTimeStepKey, "p") {
-            if (gAbilityTimer[A_TimeEdit] + BigTimeStep > 99999)
-                Return
-            gAbilityTimer[A_TimeEdit] += BigTimeStep
-        } else if (gAbilityTimer[A_TimeEdit] + TimeStep > 99999)
-            Return
-        else
-            gAbilityTimer[A_TimeEdit] += TimeStep
-        GuiControl, MainInterface: Text, % "Timer" A_TimeEdit, % gAbilityTimer[A_TimeEdit]
-    Return
-
-    DecreaseTiming:
-        if !A_TimeEdit {
-            Send, {Blind}{%DecreaseKey%}
-            Return
-        }
-        if GetKeyState(BigTimeStepKey, "p") {
-            if (gAbilityTimer[A_TimeEdit] - BigTimeStep < 1)
-                Return
-            gAbilityTimer[A_TimeEdit] -= BigTimeStep
-        } else if (gAbilityTimer[A_TimeEdit] - TimeStep < 1)
-            Return
-        else
-            gAbilityTimer[A_TimeEdit] -= TimeStep
-        GuiControl, MainInterface: Text, % "Timer" A_TimeEdit, % gAbilityTimer[A_TimeEdit]
-    Return
 
 ;;;;;;;;;; Exit ;;;;;;;;;;
     BeforeExiting() {
         global
-        for A_Loop, A_key in ["AbilityTimer_A", "AbilityTimer_B", "AbilityTimer_C", "AbilityTimer_D"]
-            IniWrite, % gAbilityTimer[A_Loop] , %FP_SavedSettings%, Arbitrations, %A_key%
+        IniWrite, % ((A_ExitReason = "Reload") ? True : False), %FP_SavedSettings%, % SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1), ReloadFlag
+        IniWrite, %RunningProfile% , %FP_SavedSettings%, % SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1), RunningProfile
     }

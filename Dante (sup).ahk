@@ -19,7 +19,7 @@
 
 ;;;;;;;;;; Variables ;;;;;;;;;;
     CheckingFiles(,"SavedSettings.ini")
-    LoadIniSection(FP_SavedSettings, "Dante (sup)")
+    LoadIniSection(FP_SavedSettings, SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1))
     global A_ScriptStatus := 0
     ;--------------------------------------------------
     global gTime := gTime ? gTime : 60000

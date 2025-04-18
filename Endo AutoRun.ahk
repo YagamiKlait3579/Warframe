@@ -32,7 +32,7 @@
 ;;;;;;;;;; Variables ;;;;;;;;;;
     ; EAR = Endo AutoRun
     CheckingFiles(,"SavedSettings.ini")
-    LoadIniSection(FP_SavedSettings, "Endo AutoRun")
+    LoadIniSection(FP_SavedSettings, SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1))
     global A_ScriptStatus := 0
     global EAR_Method := EAR_Method ? EAR_Method : "Left"
     

@@ -27,7 +27,7 @@
 
 ;;;;;;;;;; Variables ;;;;;;;;;;
     CheckingFiles(,"SavedSettings.ini")
-    LoadIniSection(FP_SavedSettings, "Master Tenno")
+    LoadIniSection(FP_SavedSettings, SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1))
     ;--------------------------------------------------
     global gAbilityTimer := []
     for A_Loop, A_key in [AbilityTimer_A, AbilityTimer_B, AbilityTimer_C, AbilityTimer_D, OperatorTimer]
