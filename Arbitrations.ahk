@@ -91,8 +91,7 @@ Return
         global
         static A_Stamp := A_Stamp ? A_Stamp : 1
         static B_Stamp := B_Stamp ? B_Stamp : 1
-        GuiControl, MainInterface: Text, ScriptStatus_Gui, Enabled
-        GuiControl, MainInterface: +cLime +Redraw , ScriptStatus_Gui
+        GuiInGame("Edit", "MainInterface", {"id" : "ScriptStatus_Gui", "Color" : "Lime", "Text" : "Enabled"})
         While GetKeyState(StartKey, "p") {
             switch RunningProfile {
                 case "Saryn" : {
@@ -124,8 +123,7 @@ Return
             lSleep(20)
             Send, {Blind}{%PrimFireKey%}
         }
-        GuiControl, MainInterface: Text, ScriptStatus_Gui, Disabled
-        GuiControl, MainInterface: +cRed +Redraw , ScriptStatus_Gui
+        GuiInGame("Edit", "MainInterface", {"id" : "ScriptStatus_Gui", "Color" : "Red", "Text" : "Disabled"})
     }
 
 ;;;;;;;;;; Exit ;;;;;;;;;;

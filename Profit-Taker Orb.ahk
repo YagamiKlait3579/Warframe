@@ -57,8 +57,7 @@ Return
     ClassicExodia() {
         global
         local A_Stamp, B_Stamp
-        GuiControl, MainInterface: Text, ScriptStatus_Gui, Enabled
-        GuiControl, MainInterface: +cLime +Redraw , ScriptStatus_Gui
+        GuiInGame("Edit", "MainInterface", {"id" : "ScriptStatus_Gui", "Color" : "Lime", "Text" : "Enabled"})
         While GetKeyState(StartKey, "p") {
             TimeStamp(A_Stamp)
             Send, {Blind}{%JumpKey%}
@@ -83,8 +82,7 @@ Return
             }
             fDebugGui("Edit", "Single cycle", TimePassed(A_Stamp) " ms")
         }
-        GuiControl, MainInterface: Text, ScriptStatus_Gui, Disabled
-        GuiControl, MainInterface: +cRed +Redraw , ScriptStatus_Gui
+        GuiInGame("Edit", "MainInterface", {"id" : "ScriptStatus_Gui", "Color" : "Red", "Text" : "Disabled"})
     }
 
     SkipArchGun() {

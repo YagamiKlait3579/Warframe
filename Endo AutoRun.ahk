@@ -78,8 +78,7 @@
         if !A_ScriptStatus {
             A_ScriptStatus := !A_ScriptStatus
             SetTimer, EndoAutoRun, -1
-            GuiControl, MainInterface: Text, ScriptStatus_Gui, Enabled
-            GuiControl, MainInterface: +cLime +Redraw , ScriptStatus_Gui
+            GuiInGame("Edit", "MainInterface", {"id" : "ScriptStatus_Gui", "Color" : "Lime", "Text" : "Enabled"})
         } else 
             Reload
     }
@@ -144,8 +143,7 @@
                 }
             }
         }
-        GuiControl, MainInterface: Text, ScriptStatus_Gui, Disabled
-        GuiControl, MainInterface: +cRed +Redraw , ScriptStatus_Gui
+        GuiInGame("Edit", "MainInterface", {"id" : "ScriptStatus_Gui", "Color" : "Red", "Text" : "Disabled"})
     }
 
 ;;;;;;;;;; Nidus ;;;;;;;;;;

@@ -73,8 +73,7 @@
     StartStop() {
         A_ScriptStatus := !A_ScriptStatus
         if A_ScriptStatus {
-            GuiControl, MainInterface: Text, ScriptStatus_Gui, Enabled
-            GuiControl, MainInterface: +cLime +Redraw, ScriptStatus_Gui
+            GuiInGame("Edit", "MainInterface", {"id" : "ScriptStatus_Gui", "Color" : "Lime", "Text" : "Enabled"})
             SetTimer, Dante, 1
         } Else
             Reload
@@ -107,8 +106,7 @@
             if !AutoRepeat {
                 SetTimer, Dante, Off
                 A_ScriptStatus := 0
-                GuiControl, MainInterface: Text, ScriptStatus_Gui, Disabled
-                GuiControl, MainInterface: +cRed +Redraw, ScriptStatus_Gui
+                GuiInGame("Edit", "MainInterface", {"id" : "ScriptStatus_Gui", "Color" : "Red", "Text" : "Disabled"})
                 fDebugGui("Edit", "------------", "------------")
                 Break
             } Else {
