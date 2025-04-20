@@ -43,7 +43,6 @@ Return
             
             ; Создаем HTTP запрос
             req := ComObjCreate("WinHttp.WinHttpRequest.5.1")
-            MsgBox, %req%
             req.Open("GET", apiUrl, true)
             req.SetRequestHeader("User-Agent", "AutoHotkeyScript")
             req.Send()
