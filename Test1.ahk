@@ -5,7 +5,7 @@
     ;global PWN := "Warframe" ; Program window name
 
 ;;;;;;;;;; Setting ;;;;;;;;;;
-
+;
 ;;;;;;;;;; Variables ;;;;;;;;;;
 
 ;;;;;;;;;; Hotkeys ;;;;;;;;;;
@@ -32,75 +32,63 @@ Return
     Return
     
     CheckForUpdates() {
-        ; Конфигурация репозитория
-        repoOwner := "YagamiKlait3579"     ; Замените на ваше имя пользователя GitHub
-        repoName := "Warframe"      ; Замените на название вашего репозитория
-        currentVersion := "1.0.0"             ; Текущая версия вашего скрипта (измените на свою)
+        ; Настройки
+        repoOwner := "YagamiKlait3579"
+        repoName := "Warframe"
+        currentVersion := "1.0.0"
+        checkFile := A_ScriptDir "\libs\CoreLibsFor_AHK\BaseLibs\Header.ahk"
+        
+        if !FileExist(checkFile)
+            return false
         
         try {
-            ; Получаем информацию о последнем коммите из GitHub API
+            ; 1. Получаем дату последнего коммита (UTC)
             apiUrl := "https://api.github.com/repos/" repoOwner "/" repoName "/commits/main"
-            
-            ; Создаем HTTP запрос
             req := ComObjCreate("WinHttp.WinHttpRequest.5.1")
             req.Open("GET", apiUrl, true)
-            req.SetRequestHeader("User-Agent", "AutoHotkeyScript")
+            req.SetRequestHeader("User-Agent", "AHK-Update-Checker")
             req.Send()
             req.WaitForResponse()
             
-            ; Парсим JSON ответ
-            response := req.ResponseText
-            if (req.Status != 200) {
-                return ; Не удалось получить данные
-            }
+            if (req.Status != 200)
+                return false
             
-            ; Извлекаем дату последнего коммита (исправленное регулярное выражение)
-            lastCommitDate := ""
-            if RegExMatch(response, """date"":\s*""([^""]+)""", match) {
-                lastCommitDate := match1
-            }
+            ; 2. Парсим дату из GitHub (UTC время)
+            if !RegExMatch(req.ResponseText, """date"":\s*""([^""]+)""", match)
+                return false
+                
+            ; 3. Преобразуем GitHub дату в формат YYYYMMDDHH24MISS
+            RegExMatch(match1, "(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})Z", dt)
+            gitTime := dt1 dt2 dt3 dt4 dt5 dt6  ; UTC время
             
-            if (lastCommitDate != "") {
-                ; Преобразуем дату коммита в формат, который можно сравнить
-                lastCommitTime := ParseGitHubDate(lastCommitDate)
+            ; 4. Получаем время создания файла (локальное время)
+            FileGetTime, fileLocalTime, %checkFile%, C
+            
+            ; 5. Вычисляем разницу часового пояса
+            localNow := A_Now
+            utcNow := A_NowUTC
+            timeDiff := localNow - utcNow  ; Разница в секундах
+            
+            ; 6. Конвертируем время файла в UTC
+            fileUTC := fileLocalTime - timeDiff
+            
+            ; 7. Сравниваем времена
+            if (gitTime > fileUTC) {
+                MsgBox, 68, Доступно обновление, 
+                (LTrim
+                Доступна новая версия макросов!
+                Ваша версия: %currentVersion%
                 
-                ; Получаем дату сборки текущего скрипта
-                scriptTime := GetScriptModificationTime()
+                Открыть страницу загрузки?
+                )
                 
-                ; Сравниваем даты
-                if (lastCommitTime > scriptTime) {
-                    ; Найдена новая версия
-                    MsgBox, 68, Обновление доступно, 
-                    (LTrim
-                    Доступна новая версия макросов!
-                    Ваша версия: %currentVersion%
-                    
-                    Хотите перейти на страницу репозитория для загрузки обновления?
-                    )
-                    
-                    IfMsgBox, Yes
-                    {
-                        Run, https://github.com/%repoOwner%/%repoName%
-                    }
-                    return true
-                }
+                IfMsgBox, Yes
+                    Run, https://github.com/%repoOwner%/%repoName%
+                return true
             }
-        } catch e {
-            ; Ошибка при проверке обновлений - молча игнорируем
+        }
+        catch {
+            ; Тихий сбой при ошибках
         }
         return false
-    }
-
-    ParseGitHubDate(dateStr) {
-        ; Преобразуем дату GitHub в формат YYYYMMDDHH24MISS
-        ; Пример входной строки: "2023-04-01T12:34:56Z"
-        formatted := RegExReplace(dateStr, "(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})Z", "$1$2$3$4$5$6")
-        return formatted
-    }
-    
-    GetScriptModificationTime() {
-        ; Получаем дату изменения текущего скрипта
-        FileGetTime, scriptTime, %A_ScriptFullPath%, M
-        FormatTime, scriptTime, %scriptTime%, yyyyMMddHHmmss
-        return scriptTime
     }
