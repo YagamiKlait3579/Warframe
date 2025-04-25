@@ -3,7 +3,7 @@
     
 ;;;;;;;;;; Tray ;;;;;;;;;;
     Menu, Tray2, Add, Eidolons shield calculator, OpenEidolonsShieldCalculator
-    Menu, Tray2, icon, Eidolons shield calculator, %FP_Base_ICO%, 26
+    Menu, Tray2, icon, Eidolons shield calculator, %OP_Base_ICO%, 26
 
 ;;;;;;;;;; Variables ;;;;;;;;;;
     global A_MagusAnomaly
@@ -142,7 +142,5 @@
 
 ;;;;;;;;;; Links ;;;;;;;;;;
     OpenEidolonsShieldCalculator() {
-        GetProgramPath := ProgramSearch("AutoHotkey 1")
-        GetScriptPath := CheckingFiles(,"EidolonsShieldCalculator.ahk")
-        Run, "%GetProgramPath%" "%GetScriptPath%"
+        Run, % """" ProgramSearch("AutoHotkey 1") """" " " """" CheckingFiles("File", False, "EidolonsShieldCalculator.ahk") """"
     }

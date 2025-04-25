@@ -3,6 +3,7 @@
     ;--------------------------------------------------
     #IfWinActive, Warframe
     global PWN := "Warframe" ; Program window name
+    CheckForUpdates("YagamiKlait3579", "Warframe", "main", CheckingFiles("File", False, "Header.ahk"))
 
 ;;;;;;;;;; Setting ;;;;;;;;;;
     Exodia_ThrowingTime := 50      ; Время броска

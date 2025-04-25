@@ -36,14 +36,13 @@
         ;--------------------------------------------------
         Gui, SwitchingMacros: Show, , Switching Macros
         if (((allWidth / 16) * 9) > allHeight)
-            Gui, SwitchingMacros: Add, Picture, % "x0 y0 w" allWidth " h-1", % "HBITMAP:" ReadImages(CheckingFiles(,"Warframe_Images.dll"), "SwitchingMacros")
+            Gui, SwitchingMacros: Add, Picture, % "x0 y0 w" allWidth " h-1", % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Warframe_Images.dll"), "SwitchingMacros")
         else
-            Gui, SwitchingMacros: Add, Picture, % "x0 y0 w-1 h" allHeight, % "HBITMAP:" ReadImages(CheckingFiles(,"Warframe_Images.dll"), "SwitchingMacros")
+            Gui, SwitchingMacros: Add, Picture, % "x0 y0 w-1 h" allHeight, % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Warframe_Images.dll"), "SwitchingMacros")
     }
 
     Run_SwitchingMacros(Name) {
-        GetProgramPath := ProgramSearch("AutoHotkey 1")
-        Run, "%GetProgramPath%" "%A_ScriptDir%\%Name%"
+        Run, % """" ProgramSearch("AutoHotkey 1") """ """ A_ScriptDir "\" Name """"
         ExitApp
     }
 

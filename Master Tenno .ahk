@@ -3,6 +3,7 @@
     ;--------------------------------------------------
     #IfWinActive, Warframe
     global PWN := "Warframe" ; Program window name
+    CheckForUpdates("YagamiKlait3579", "Warframe", "main", CheckingFiles("File", False, "Header.ahk"))
     OnExit("BeforeExiting")
 
 ;;;;;;;;;; Setting ;;;;;;;;;;
@@ -26,8 +27,7 @@
     GuiPositionY        := 0.9600 ; Изменение положения интерфейса по вертикали (Y-координата) только для этого скрипта
 
 ;;;;;;;;;; Variables ;;;;;;;;;;
-    CheckingFiles(,"SavedSettings.ini")
-    LoadIniSection(FP_SavedSettings, SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1))
+    LoadIniSection(CheckingFiles("File", True, "SavedSettings.ini"), SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1))
     ;--------------------------------------------------
     global gAbilityTimer := []
     for A_Loop, A_key in [AbilityTimer_A, AbilityTimer_B, AbilityTimer_C, AbilityTimer_D, OperatorTimer]
@@ -199,6 +199,6 @@
     BeforeExiting() {
         global
         for A_Loop, A_key in ["AbilityTimer_A", "AbilityTimer_B", "AbilityTimer_C", "AbilityTimer_D", "OperatorTimer"]
-            IniWrite, % gAbilityTimer[A_Loop] , %FP_SavedSettings%, Master Tenno, %A_key%
-        IniWrite, %ExodiaSpam%, %FP_SavedSettings%, Master Tenno, ExodiaSpam
+            IniWrite, % gAbilityTimer[A_Loop] , %OP_SavedSettings%, Master Tenno, %A_key%
+        IniWrite, %ExodiaSpam%, %OP_SavedSettings%, Master Tenno, ExodiaSpam
     }

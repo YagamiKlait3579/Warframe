@@ -3,6 +3,7 @@
     ;--------------------------------------------------
     #IfWinActive, Warframe
     global PWN := "Warframe" ; Program window name
+    CheckForUpdates("YagamiKlait3579", "Warframe", "main", CheckingFiles("File", False, "Header.ahk"))
     OnExit("BeforeExiting")
 
 ;;;;;;;;;; Setting ;;;;;;;;;;
@@ -17,8 +18,7 @@
     GuiPositionY        := 0.9600 ; Изменение положения интерфейса по вертикали (Y-координата) только для этого скрипта
 
 ;;;;;;;;;; Variables ;;;;;;;;;;
-    CheckingFiles(,"SavedSettings.ini")
-    LoadIniSection(FP_SavedSettings, SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1))
+    LoadIniSection(CheckingFiles("File", True, "SavedSettings.ini"), SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1))
     ;--------------------------------------------------
     global A_ScriptStatus := 0
     global RoundFlag, StatusMission, ExitMissionFlag, ExitMissionFlag2, gExitMissionStamp
@@ -105,7 +105,7 @@ Return
         w1 := A_ScreenWidth / 3
         h1 := (w1 / 16) * 9
         Gui, EditTimeGui: Show, w%w1% h%h1%, Auto exit from the mission
-        Gui, EditTimeGui: Add, Picture, % "x0 y0 w" w1 " h-1", % "HBITMAP:" ReadImages(CheckingFiles(,"Warframe_Images.dll"), "Equinox_Index")
+        Gui, EditTimeGui: Add, Picture, % "x0 y0 w" w1 " h-1", % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Warframe_Images.dll"), "Equinox_Index")
     }
 
     UpdateValues(param = "") {
@@ -249,8 +249,8 @@ Return
 ;;;;;;;;;; Exit ;;;;;;;;;;
     BeforeExiting() {
         global
-        IniWrite, %gExitMissionStamp%, %FP_SavedSettings%, Equinox (index), gExitMissionStamp
-        IniWrite, %ExitMissionFlag2%, %FP_SavedSettings%, Equinox (index), ExitMissionFlag2
+        IniWrite, %gExitMissionStamp%, %OP_SavedSettings%, Equinox (index), gExitMissionStamp
+        IniWrite, %ExitMissionFlag2%, %OP_SavedSettings%, Equinox (index), ExitMissionFlag2
     }
 
     EditTimeGuiGuiClose() {

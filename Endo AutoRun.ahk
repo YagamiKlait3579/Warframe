@@ -3,6 +3,7 @@
     ;--------------------------------------------------
     #IfWinActive, Warframe
     global PWN := "Warframe" ; Program window name
+    CheckForUpdates("YagamiKlait3579", "Warframe", "main", CheckingFiles("File", False, "Header.ahk"))
     OnExit("BeforeExiting")
 
 ;;;;;;;;;; Setting ;;;;;;;;;;
@@ -31,8 +32,7 @@
 
 ;;;;;;;;;; Variables ;;;;;;;;;;
     ; EAR = Endo AutoRun
-    CheckingFiles(,"SavedSettings.ini")
-    LoadIniSection(FP_SavedSettings, SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1))
+    LoadIniSection(CheckingFiles("File", True, "SavedSettings.ini"), SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1))
     global A_ScriptStatus := 0
     global EAR_Method := EAR_Method ? EAR_Method : "Left"
     
@@ -335,5 +335,5 @@
     BeforeExiting() {
         global
         BlockInput, Off
-        IniWrite, %EAR_Method%, %FP_SavedSettings%, Endo AutoRun, EAR_Method
+        IniWrite, %EAR_Method%, %OP_SavedSettings%, Endo AutoRun, EAR_Method
     }

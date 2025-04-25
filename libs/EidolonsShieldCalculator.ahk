@@ -1,30 +1,30 @@
 ﻿;;;;;;;;;; Loading ;;;;;;;;;;
-#SingleInstance, Force
-#Persistent
-#NoEnv
-;#NoTrayIcon
-;--------------------------------------------------
-#KeyHistory, 0
-;#InstallKeybdHook
-;#InstallMouseHook
-;#UseHook
-;--------------------------------------------------
-#MaxHotkeysPerInterval, 9999999
-#HotkeyInterval, 9999999
-;--------------------------------------------------
-#MaxThreads, 255
-;#MaxThreadsPerHotkey, 255
-;--------------------------------------------------
-Process, Priority,, A
-CoordMode, ToolTip, Screen
-CoordMode, Pixel, Screen
-ListLines Off
-SendMode, Event ; Input
-SetBatchLines -1
-SetKeyDelay, -1, -1
-SetMouseDelay, -1, -1
-SetControlDelay -1
-SetWinDelay -1
+    #SingleInstance, Force
+    #Persistent
+    #NoEnv
+    ;#NoTrayIcon
+    ;--------------------------------------------------
+    #KeyHistory, 0
+    ;#InstallKeybdHook
+    ;#InstallMouseHook
+    ;#UseHook
+    ;--------------------------------------------------
+    #MaxHotkeysPerInterval, 9999999
+    #HotkeyInterval, 9999999
+    ;--------------------------------------------------
+    #MaxThreads, 255
+    ;#MaxThreadsPerHotkey, 255
+    ;--------------------------------------------------
+    Process, Priority,, A
+    CoordMode, ToolTip, Screen
+    CoordMode, Pixel, Screen
+    ListLines Off
+    SendMode, Event ; Input
+    SetBatchLines -1
+    SetKeyDelay, -1, -1
+    SetMouseDelay, -1, -1
+    SetControlDelay -1
+    SetWinDelay -1
 
 ;;;;;;;;;; Run as Administrator ;;;;;;;;;;
     ; https://www.autohotkey.com/docs/v1/lib/Run.htm#RunAs
@@ -60,45 +60,41 @@ SetWinDelay -1
                ,"CritMultiplier" : 2.6
                ,"FireRate"       : 2}
 
-    CheckingFiles(,"Base_ICO", "SavedSettings.ini")
-    LoadIniSection(FP_SavedSettings, "Eidolons Shield Calculator")
+    CheckingFiles("File", True, "Base_ICO", "SavedSettings.ini")
+    LoadIniSection(OP_SavedSettings, "Eidolons Shield Calculator")
 
 ;;;;;;;;;; Tray Menu ;;;;;;;;;;
     Menu, Tray, Tip, Eidolons Shield Calculator
-    Menu, Tray, icon, %FP_Base_ICO%,26, 1
+    Menu, Tray, icon, %OP_Base_ICO%,26, 1
 
     Menu, Tray, NoStandard
-    Menu, Tray, Add, Discord, OpenDiscord
-    Menu, Tray, icon, Discord, %FP_Base_ICO%,16
+    funcObj := Func("Tray_links").Bind("Discord")
+    Menu, Tray, Add, Discord, %funcObj%
+    Menu, Tray, icon, Discord, %OP_Base_ICO%,16
 
-    Menu, Tray, Add, GitHub, OpenGitHub
-    Menu, Tray, icon, GitHub, %FP_Base_ICO%,17
+    funcObj := Func("Tray_links").Bind("GitHub")
+    Menu, Tray, Add, GitHub, %funcObj%
+    Menu, Tray, icon, GitHub, %OP_Base_ICO%,17
 
     Menu, Tray, Add
-    Menu, Tray, Add, Reload, ReloadScript 
-    Menu, Tray, icon, Reload, %FP_Base_ICO%,5
+    funcObj := Func("Tray_links").Bind("Reload")
+    Menu, Tray, Add, Reload, %funcObj% 
+    Menu, Tray, icon, Reload, %OP_Base_ICO%,5
 
-    Menu, Tray, Add, Stop (exit), StopScript 
-    Menu, Tray, icon, Stop (exit), %FP_Base_ICO%,3
+    funcObj := Func("Tray_links").Bind("Stop")
+    Menu, Tray, Add, Stop (exit), %funcObj% 
+    Menu, Tray, icon, Stop (exit), %OP_Base_ICO%,3
 
     Menu, Tray, Default, Stop (exit)
 
-    OpenDiscord() { 
-        Run, https://discord.gg/yrRfUMXAnk
-    }
-
-    OpenGitHub() {
-        Run, https://github.com/YagamiKlait3579
-    }
-
-    ReloadScript() {
-        Suspend, Permit
-        Reload
-    }
-
-    StopScript() {
-        Suspend, Permit
-        ExitApp
+    Tray_links(param) {
+        switch param {
+            case "Discord" : Run, https://discord.gg/yrRfUMXAnk
+            case "GitHub"  : Run, https://github.com/YagamiKlait3579
+            ;--------------------------------------------------
+            case "Reload"  : Reload
+            case "Stop"    : ExitApp
+        }
     }
 
 ;;;;;;;;;; Gui ;;;;;;;;;;
@@ -215,12 +211,17 @@ SetWinDelay -1
         Gui, Calculator: Add, Edit, % " x+ w" MI_W-(MI_W*0.60) " h"MI_H " -TabStop +Number +Center Limit4 vE_Jade gUpdate", %E_Jade%
 
     ;*** Links ***
-        Gui, Calculator: Add, Picture, % "xs y"KI_H*0.7 " w"MI_W " h-1 +Border +BackgroundTrans gOpenDiscord", % "HBITMAP:" ReadImages(CheckingFiles(,"Base_Images.dll"), "DiscordLogo")
-        Gui, Calculator: Add, Picture, % "xs y+m w"MI_W " h-1 +Border +BackgroundTrans gOpenGitHub", % "HBITMAP:" ReadImages(CheckingFiles(,"Base_Images.dll"), "GitHubLogo")
+        Gui, Calculator: Add, Picture, % "xs y"KI_H*0.7 " w"MI_W " h-1 +Border +BackgroundTrans vDiscordGUI", % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Base_Images.dll"), "DiscordLogo")
+        funcObj := Func("Tray_links").Bind("Discord")
+        GuiControl Calculator: +g, DiscordGUI, %funcObj%
+
+        Gui, Calculator: Add, Picture, % "xs y+m w"MI_W " h-1 +Border +BackgroundTrans vGitHubGUI", % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Base_Images.dll"), "GitHubLogo")
+        funcObj := Func("Tray_links").Bind("GitHub")
+        GuiControl Calculator: +g, GitHubGUI, %funcObj%
 
     ;*** Background ***
         Gui, Calculator: Margin, 0, 0
-        Gui, Calculator: Add, Picture, % "x0 y0 w"(A_ScreenWidth/2) " h-1", % "HBITMAP:" ReadImages(CheckingFiles(,"Warframe_Images.dll"), "EidolonsShieldCalculator")
+        Gui, Calculator: Add, Picture, % "x0 y0 w"(A_ScreenWidth/2) " h-1", % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Warframe_Images.dll"), "EidolonsShieldCalculator")
 
 ;;;;;;;;;; Start ;;;;;;;;;;
     OnExit("ExitCalculator")
@@ -284,9 +285,9 @@ Return
     }
 
 ;;;;;;;;;; Exit ;;;;;;;;;;
-    CalculatorGuiClose:
+    CalculatorGuiClose() {
         ExitApp
-    Return
+    }
 
     ExitCalculator() {
         global
@@ -295,6 +296,6 @@ Return
                             , "CB_MaduraiFirstAbility", "CB_MaduraiSecondAbility", "CB_Jade", "E_Jade"]
         for A_Loop, A_key in A_Checkbox {
             StringReplace, B_Key, %A_key%, ""
-            IniWrite, %B_Key% , %FP_SavedSettings%, Eidolons Shield Calculator, %A_key%
+            IniWrite, %B_Key% , %OP_SavedSettings%, Eidolons Shield Calculator, %A_key%
         }      
     }

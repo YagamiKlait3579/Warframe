@@ -3,6 +3,7 @@
     ;--------------------------------------------------
     #IfWinActive, Warframe
     global PWN := "Warframe" ; Program window name
+    CheckForUpdates("YagamiKlait3579", "Warframe", "main", CheckingFiles("File", False, "Header.ahk"))
     OnExit("BeforeExiting")
 
 ;;;;;;;;;; Setting ;;;;;;;;;;
@@ -15,8 +16,7 @@
     DurationOfEclipse     := 53     ; Длительность способности "Затмение" (sec)
     
 ;;;;;;;;;; Variables ;;;;;;;;;;
-    CheckingFiles(,"SavedSettings.ini")
-    LoadIniSection(FP_SavedSettings, SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1))
+    LoadIniSection(CheckingFiles("File", True, "SavedSettings.ini"), SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1))
     ;--------------------------------------------------
     global RunningProfile, RunningFlag := False
     ReloadFlag := ReloadFlag ? ReloadFlag : False
@@ -68,7 +68,7 @@ Return
         w1 := A_ScreenWidth / 4
         h1 := (w1 / 16) * 9
         Gui, ChoosingProfile: Show, w%w1% h%h1%, Arbitrations profile
-        Gui, ChoosingProfile: Add, Picture, % "x0 y0 w" w1 " h-1", % "HBITMAP:" ReadImages(CheckingFiles(,"Warframe_Images.dll"), "Arbitrations")
+        Gui, ChoosingProfile: Add, Picture, % "x0 y0 w" w1 " h-1", % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Warframe_Images.dll"), "Arbitrations")
         Loop, {
             lSleep(1)
         } Until RunningFlag
@@ -129,6 +129,6 @@ Return
 ;;;;;;;;;; Exit ;;;;;;;;;;
     BeforeExiting() {
         global
-        IniWrite, % ((A_ExitReason = "Reload") ? True : False), %FP_SavedSettings%, % SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1), ReloadFlag
-        IniWrite, %RunningProfile% , %FP_SavedSettings%, % SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1), RunningProfile
+        IniWrite, % ((A_ExitReason = "Reload") ? True : False), %OP_SavedSettings%, % SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1), ReloadFlag
+        IniWrite, %RunningProfile% , %OP_SavedSettings%, % SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1), RunningProfile
     }

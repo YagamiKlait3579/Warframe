@@ -3,6 +3,7 @@
     ;--------------------------------------------------
     #IfWinActive, Warframe
     global PWN := "Warframe" ; Program window name
+    CheckForUpdates("YagamiKlait3579", "Warframe", "main", CheckingFiles("File", False, "Header.ahk"))
     OnExit("BeforeExiting")
 
 ;;;;;;;;;; Setting ;;;;;;;;;;
@@ -18,8 +19,7 @@
     GuiPositionY     := 0.9600 ; Изменение положения интерфейса по вертикали (Y-координата) только для этого скрипта
 
 ;;;;;;;;;; Variables ;;;;;;;;;;
-    CheckingFiles(,"SavedSettings.ini")
-    LoadIniSection(FP_SavedSettings, SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1))
+    LoadIniSection(CheckingFiles("File", True, "SavedSettings.ini"), SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1))
     global A_ScriptStatus := 0
     ;--------------------------------------------------
     global gTime := gTime ? gTime : 60000
@@ -157,11 +157,11 @@
 ;;;;;;;;;; Exit ;;;;;;;;;;
     BeforeExiting() {
         global
-        IniWrite, %gTime%, %FP_SavedSettings%, Dante (sup), gTime
+        IniWrite, %gTime%, %OP_SavedSettings%, Dante (sup), gTime
         ;--------------------------------------------------
-        IniWrite, %Triumph_Flag%, %FP_SavedSettings%, Dante (sup), Triumph_Flag
-        IniWrite, %Wordwarden_Flag%, %FP_SavedSettings%, Dante (sup), Wordwarden_Flag
-        IniWrite, %Pageflight_Flag%, %FP_SavedSettings%, Dante (sup), Pageflight_Flag
+        IniWrite, %Triumph_Flag%, %OP_SavedSettings%, Dante (sup), Triumph_Flag
+        IniWrite, %Wordwarden_Flag%, %OP_SavedSettings%, Dante (sup), Wordwarden_Flag
+        IniWrite, %Pageflight_Flag%, %OP_SavedSettings%, Dante (sup), Pageflight_Flag
         ;--------------------------------------------------
-        IniWrite, %AutoRepeat%, %FP_SavedSettings%, Dante (sup), AutoRepeat
+        IniWrite, %AutoRepeat%, %OP_SavedSettings%, Dante (sup), AutoRepeat
     }
