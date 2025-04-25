@@ -18,6 +18,9 @@
     B_AbilityClamp      := false  ; Поменять нажатие способности B на зажатие (True — включено, False — выключено)
     C_AbilityClamp      := false  ; Поменять нажатие способности C на зажатие (True — включено, False — выключено)
     D_AbilityClamp      := false  ; Поменять нажатие способности D на зажатие (True — включено, False — выключено)
+    OperatorRepeatKey   := 250    ; Применять перенос дважды (для входа и выхода оператора за раз)
+    ;! OperatorRepeatKey - Указать время между нажатиями (ms.)
+    ;! Если указать 0, перенос будет применятся один раз за нажатие.
     AbilityClamp_TIme   := 250    ; Время зажима способности (ms.)
     ;--------------------------------------------------
     Exodia_ThrowingTime := 50     ; Время броска
@@ -130,6 +133,10 @@
                     Send, {Blind}{%B_key% Up}
                 } else {
                     Send, {Blind}{%B_key%}
+                    if ((A_Loop = 5) && OperatorRepeatKey) {
+                        lSleep(OperatorRepeatKey)
+                        Send, {Blind}{%B_key%}
+                    }
                 }
                 lSleep(SkillCastTime)
                 A_Stamp[A_Loop] := TimeStamp()
