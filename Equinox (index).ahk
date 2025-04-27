@@ -15,15 +15,26 @@
     SwitchExitKey        = F1         ; Вкл\Выкл выхода из миссии по таймеру
     EditExitTimekey      = F2         ; Редактировать время для таймера выхода
     ;--------------------------------------------------
-    GuiPositionY        := 0.9600 ; Изменение положения интерфейса по вертикали (Y-координата) только для этого скрипта
+    /* 
+        Для работы SafeMode вы должны зайти на миссию в соло режиме.
+        Если скрипт заметит что персонаж умер, то он откроет меню для остановки миссии, 
+        чтобы вы ее не провалили, и будет ждать вашего присутствия.
+    */
+    SafeMode            := True
+    Text_Death          := "|<>FBFDFA-0.80$174.00000000000000000000000000000Ts000000000000000000000000000Ty000000000000000000000000000Tz000000000000000000000000000Q3U00000000000000000000000000Q1U00000000000000000000000000Q1k00000000000000000000000000Q1k7k0zUNs0T0Q670Ty0T0kC71k7kQ1kDw1lkPw0zUC670Ty1zUkC71kDwQ1UQS3UsSC1lkC6C0QC3XUkC73kQQQ3Us630MQ73Us76C0QC31kkC73kMCRz0k700MM730M36Q0QC70kkC77ks6Tz0k700MM330M3aM0QC60kkC77kk6Q1Uk300sM370Q1zs0QC7zkkC7AkzyQ0kk30DUM370Q1zk0QC7zkzy7AkzyQ0kk30DkM370Q1zs0QC600zy7Mkk0Q0sk300sM370Q3aQ0QC600zi7Mkk0Q0sk700MM370M36Q0QC700kC7Ekk0Q0ks700MM730M76C0s6700kC7kks0Q1kMC30MQ73UsD6C0sC300kC7UkM0Q3kTw3UsSC1lkC671sC3kkkC7UkSCTzUDw1lkPw0zUS677zzVzkkC70kDyTy07k0T0Ns0T0Q63bzzUT0kC70k3s00000000M0000000703000000000000000000M0000000703000000000000000000M0000000703000000000000000000M0000000703000000000000000000M0000000703000000000000000000M0000000000000000000000000000000000000000000000000U"
+    SM_A_FindText       := 0.20       ; Разброс точности текста для библиотеки Find Text
+    ;--------------------------------------------------
+    GuiPositionY        := 0.9600     ; Изменение положения интерфейса по вертикали (Y-координата) только для этого скрипта
 
 ;;;;;;;;;; Variables ;;;;;;;;;;
     LoadIniSection(CheckingFiles("File", True, "SavedSettings.ini"), SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1))
     ;--------------------------------------------------
     global A_ScriptStatus := 0
     global RoundFlag, StatusMission, ExitMissionFlag, ExitMissionFlag2, gExitMissionStamp
-    ; MT = MissionTrigger
+    ; MT - MissionTrigger
     MT_Coords := [Round((A_ScreenWidth / 4) * 3), Round((A_ScreenHeight / 4) * 3), A_ScreenWidth, A_ScreenHeight]
+    ; SM - Safe mode
+    SM_Coords :=  [Round((A_ScreenWidth / 8) * 2), Round(A_ScreenHeight / 8), Round((A_ScreenWidth / 8) * 6), Round((A_ScreenHeight / 8) * 2)]
 
 ;;;;;;;;;; Hotkeys ;;;;;;;;;;
     Hotkey, *%StartKey%, StartStop
@@ -196,6 +207,17 @@ Return
         Send, {Blind}{%AbilityA_Key%}
         lSleep(20)
         Loop, {
+            if SafeMode {
+                if FindText(,, SM_Coords[1], SM_Coords[2], SM_Coords[3], SM_Coords[4], SM_A_FindText, SM_A_FindText, Text_Death) {
+                    Send, {Blind}{Esc}
+                    SetTimer, BaseScript, off
+                    GuiInGame("Edit", "MainInterface", {"id" : "ScriptStatus_Gui", "Color" : "Red", "Text" : "Disabled"})
+                    fExitMissionTimer("Off")
+                    A_ScriptStatus := False
+                    fDebugGui("Edit", "You're dead", A_Hour " hour : " A_Min " min : " A_Sec " sec")
+                    Break
+                }
+            }
             GuiControl, MainInterface: Text, Timer_Gui, % Round(RepeatTime - TimePassed(A_Stamp,, "sec"), 1)
             if fStatusMission() {
                 timePassed := Round(WorldTimePassed(RoundFlag,, "sec"))
