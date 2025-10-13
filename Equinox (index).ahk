@@ -186,13 +186,13 @@ Return
             A_ScriptStatus := !A_ScriptStatus
             RoundFlag := RoundFlag ? RoundFlag : WorldTimeStamp()
             TimeStamp(StatusMission)
-            SetTimer, BaseScript, 1
+            SetTimer, Main, 1
             GuiInGame("Edit", "MainInterface", {"id" : "ScriptStatus_Gui", "Color" : "Lime", "Text" : "Enabled"})
         } else 
             Reload
     }
 
-    BaseScript() {
+    Main() {
         global
         local mTime, sTime, timePassed, A_Stamp
         TimeStamp(A_Stamp)
@@ -210,7 +210,7 @@ Return
             if SafeMode {
                 if FindText(,, SM_Coords[1], SM_Coords[2], SM_Coords[3], SM_Coords[4], SM_A_FindText, SM_A_FindText, Text_Death) {
                     Send, {Blind}{Esc}
-                    SetTimer, BaseScript, off
+                    SetTimer, Main, off
                     GuiInGame("Edit", "MainInterface", {"id" : "ScriptStatus_Gui", "Color" : "Red", "Text" : "Disabled"})
                     fExitMissionTimer("Off")
                     A_ScriptStatus := False
@@ -225,7 +225,7 @@ Return
                 sTime := (timePassed < 60) ? timePassed : Round(timePassed - (mTime * 60))
                 fDebugGui("Edit", "Last round time", mTime " min : " sTime " sec")
                 if ExitMissionFlag {
-                    SetTimer, BaseScript, off
+                    SetTimer, Main, off
                     GuiInGame("Edit", "MainInterface", {"id" : "ScriptStatus_Gui", "Color" : "Red", "Text" : "Disabled"})
                     fSetCursor(A_ScreenWidth / 4, (A_ScreenHeight / 2))
                     fExitNextMission()
@@ -271,8 +271,8 @@ Return
 ;;;;;;;;;; Exit ;;;;;;;;;;
     BeforeExiting() {
         global
-        IniWrite, %gExitMissionStamp%, %OP_SavedSettings%, Equinox (index), gExitMissionStamp
-        IniWrite, %ExitMissionFlag2%, %OP_SavedSettings%, Equinox (index), ExitMissionFlag2
+        IniWrite, %gExitMissionStamp%, %OP_SavedSettings%, % SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1), gExitMissionStamp
+        IniWrite, %ExitMissionFlag2%, %OP_SavedSettings%, % SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1), ExitMissionFlag2
     }
 
     EditTimeGuiGuiClose() {

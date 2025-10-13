@@ -8,10 +8,10 @@
 
 ;;;;;;;;;; Setting ;;;;;;;;;;
     SkillCastTime         := 1000   ; Время применения одной способности (ms)
-    EnergizedMunitionsKey := 4      ; Клавиша на которой привита способность "Энергетические боеприпасы" от гельминта
+    EnergizedMunitionsKey := 4      ; Клавиша с способностью "Энергетические боеприпасы" от Гельминта
     ;;; Saryn
-    DurationOfSpores      := 85     ; Длительность "Дозы яда"
-    DurationOfToxicLash   := 95     ; Длительность "Токсичный хлыст"
+    DurationOfSpores      := 85     ; Длительность "Дозы яда" (sec)
+    DurationOfToxicLash   := 95     ; Длительность "Токсичный хлыст" (sec)
     ;;; Mirage
     DurationOfEclipse     := 53     ; Длительность способности "Затмение" (sec)
     
@@ -29,7 +29,7 @@
     }
 
 ;;;;;;;;;; Hotkeys ;;;;;;;;;;
-    Hotkey, *%StartKey%, BaseScript
+    Hotkey, *%StartKey%, Main
 
 ;;;;;;;;;; Gui ;;;;;;;;;;
     PlaceForTheText := " Ширина самого длинного текста "
@@ -87,7 +87,7 @@ Return
     }
 
 ;;;;;;;;;; Scripts ;;;;;;;;;;
-    BaseScript() {
+    Main() {
         global
         static A_Stamp := A_Stamp ? A_Stamp : 1
         static B_Stamp := B_Stamp ? B_Stamp : 1

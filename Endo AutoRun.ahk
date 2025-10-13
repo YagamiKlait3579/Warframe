@@ -37,7 +37,7 @@
     global EAR_Method := EAR_Method ? EAR_Method : "Left"
     
 ;;;;;;;;;; Hotkeys ;;;;;;;;;;
-    Hotkey, *%StartKey%, BaseScript
+    Hotkey, *%StartKey%, Main
 
     fHotkey := Func("Nidus").Bind("Test")
     Hotkey, *%TestNidusKey%, %fHotkey%
@@ -73,7 +73,7 @@
     Return
 
 ;;;;;;;;;; Functions ;;;;;;;;;;
-    BaseScript() {
+    Main() {
         global
         if !A_ScriptStatus {
             A_ScriptStatus := !A_ScriptStatus
@@ -335,5 +335,5 @@
     BeforeExiting() {
         global
         BlockInput, Off
-        IniWrite, %EAR_Method%, %OP_SavedSettings%, Endo AutoRun, EAR_Method
+        IniWrite, %EAR_Method%, %OP_SavedSettings%, % SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1), EAR_Method
     }

@@ -7,7 +7,8 @@
     OnExit("BeforeExiting")
 
 ;;;;;;;;;; Setting ;;;;;;;;;;
-    ModKey            = Shift   ; При удержании этой клавиши можно включать\выключать бафы, а также менять время повтора.
+    ModKey            = Shift   ; Включает/выключает применение бафа при нажатии этой клавиши вместе с клавишей бафа
+    ; Также при удержании этой клавиши можно менять время повтора бафа клавишами IncreaseKey и DecreaseKey
     TriumphKey       := 1       ; Вкл\выкл применения бафа овергварда
     WordwardenKey    := 2       ; Вкл\выкл применения бафа сапп книги
     PageflightKey    := 3       ; Вкл\выкл применения бафа птички для дебафа врагов
@@ -157,11 +158,11 @@
 ;;;;;;;;;; Exit ;;;;;;;;;;
     BeforeExiting() {
         global
-        IniWrite, %gTime%, %OP_SavedSettings%, Dante (sup), gTime
+        IniWrite, %gTime%, %OP_SavedSettings%, % SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1), gTime
         ;--------------------------------------------------
-        IniWrite, %Triumph_Flag%, %OP_SavedSettings%, Dante (sup), Triumph_Flag
-        IniWrite, %Wordwarden_Flag%, %OP_SavedSettings%, Dante (sup), Wordwarden_Flag
-        IniWrite, %Pageflight_Flag%, %OP_SavedSettings%, Dante (sup), Pageflight_Flag
+        IniWrite, %Triumph_Flag%, %OP_SavedSettings%, % SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1), Triumph_Flag
+        IniWrite, %Wordwarden_Flag%, %OP_SavedSettings%, % SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1), Wordwarden_Flag
+        IniWrite, %Pageflight_Flag%, %OP_SavedSettings%, % SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1), Pageflight_Flag
         ;--------------------------------------------------
-        IniWrite, %AutoRepeat%, %OP_SavedSettings%, Dante (sup), AutoRepeat
+        IniWrite, %AutoRepeat%, %OP_SavedSettings%, % SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1), AutoRepeat
     }

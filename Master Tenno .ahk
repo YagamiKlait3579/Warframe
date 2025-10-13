@@ -95,7 +95,8 @@
     Return
 
 ;;;;;;;;;; Scripts ;;;;;;;;;;
-    ClassicExodia:
+    ClassicExodia() {
+        global
         While GetKeyState(StartKey, "p"){
             TimeStamp(ExodiaStart)
             Send, {Blind}{%JumpKey%}
@@ -121,9 +122,10 @@
         fSleep(2)
         Send, {Blind}{%ZoomKey%}
         fDebugGui("Edit", "Exodia throw", TimePassed(ExodiaStart) " ms")
-    Return
+    }
 
-    BaseScript:
+    Main() {
+        global
         for A_Loop, A_key in A_Activity {
             if A_key && (TimePassed(A_Stamp[A_Loop]) > gAbilityTimer[A_Loop]) {
                 B_key := A_AbilityKey[A_Loop]
@@ -142,7 +144,7 @@
                 A_Stamp[A_Loop] := TimeStamp()
             }
         }
-    Return
+    }
 
 ;;;;;;;;;; Control Functions ;;;;;;;;;;
     StartStop(key) {
@@ -151,9 +153,9 @@
             GuiControl, % "MainInterface: " (A_Activity[A_Index] ? "+cLime" : "+cRed") " +Redraw", % "Ability" A_Index
         A_Stamp[key] := 0
         if (A_Activity.1 || A_Activity.2 || A_Activity.3 || A_Activity.4 || A_Activity.5)
-            SetTimer, BaseScript, 1, -1
+            SetTimer, Main, 1, -1
         else
-            SetTimer, BaseScript, off
+            SetTimer, Main, off
     }
 
     SwitchExodia:
@@ -206,6 +208,6 @@
     BeforeExiting() {
         global
         for A_Loop, A_key in ["AbilityTimer_A", "AbilityTimer_B", "AbilityTimer_C", "AbilityTimer_D", "OperatorTimer"]
-            IniWrite, % gAbilityTimer[A_Loop] , %OP_SavedSettings%, Master Tenno, %A_key%
-        IniWrite, %ExodiaSpam%, %OP_SavedSettings%, Master Tenno, ExodiaSpam
+            IniWrite, % gAbilityTimer[A_Loop] , %OP_SavedSettings%, % SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1), %A_key%
+        IniWrite, %ExodiaSpam%, %OP_SavedSettings%, % SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1), ExodiaSpam
     }
