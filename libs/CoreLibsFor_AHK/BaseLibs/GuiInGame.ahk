@@ -166,7 +166,7 @@
                         Else if params.Hwnd
                             WinGetPos, MI_X2, MI_Y2, MI_W2, MI_H2, % "ahk_id" params.Hwnd
                         Else {
-                            MsgBox, 16, GuiInGame, Не указан Hwnd основного окна, или указан не верно.`n`nThe Hwnd of the main window is not specified, or it is specified incorrectly.
+                            MsgBox, 262160, GuiInGame, Не указан Hwnd основного окна, или указан не верно.`n`nThe Hwnd of the main window is not specified, or it is specified incorrectly.
                             Return 1
                         }
                         Gui, %NameGui%: Show, % (params.Hwnd.3 ? ((params.Hwnd.3 = "auto") ? "" : " w" params.Hwnd.3 ): " w" MI_W2) (params.Hwnd.4 ? ((params.Hwnd.4 = "auto") ? "" : " h" params.Hwnd.4 ): " h" MI_H2) " NoActivate"
@@ -211,7 +211,7 @@
             }
             case "Edit": {
                 if !params.id
-                    MsgBox, 16, GuiInGame, Не указано имя строки.`nThe string name is not specified.
+                    MsgBox, 262160, GuiInGame, Не указано имя строки.`nThe string name is not specified.
                 if params.text    
                     GuiControl, %NameGui%: Text, % params.id, % params.text 
                 if params.color
@@ -314,7 +314,7 @@
             Return
         }
         if (!Params.pos.1 || !Params.pos.2 || !Params.pos.3 || !Params.pos.4) && (!Params.coords.1 || !Params.coords.2 || !Params.coords.3 || !Params.coords.4) && !Params.Center  && !Params.Hwnd{
-            MsgBox, 16, fBorder, Неверно указаны координаты для %NameGui%.`nThe coordinates are incorrectly specified for %NameGui%.
+            MsgBox, 262160, fBorder, Неверно указаны координаты для %NameGui%.`nThe coordinates are incorrectly specified for %NameGui%.
             Return 1
         }
         Params.size := Params.size > 0 ? Params.size : (DGP.BorderSize ? DGP.BorderSize : 1)
@@ -408,14 +408,14 @@
                 local MI_X, MI_Y, MI_W, MI_H
                 local DG_X, DG_Y, DG_W, DG_H, DG_W2, DG_Offset
                 if !param1 {
-                    MsgBox, 16, fDebugGui, Не указан Hwnd основного окна, или указан не верно.`n`nThe Hwnd of the main window is not specified, or it is specified incorrectly.
+                    MsgBox, 262160, fDebugGui, Не указан Hwnd основного окна, или указан не верно.`n`nThe Hwnd of the main window is not specified, or it is specified incorrectly.
                     Return 1
                 }
                 param2 := !param2 ? 1 : param2
                 LineAmount := param2
                 WinGetPos, MI_X, MI_Y, MI_W, MI_H, % "ahk_id" param1
                 if !MI_X && !MI_Y && !MI_W && !MI_H {
-                    MsgBox, 16, fDebugGui, Координаты окна ориентира не найдены.`nThe coordinates of the landmark window have not been found.
+                    MsgBox, 262160, fDebugGui, Координаты окна ориентира не найдены.`nThe coordinates of the landmark window have not been found.
                     Return 1
                 }
                 DG_W2 := !params.width ? ((MI_W - (DGP.Margin.1 * 3)) / 2) : ((params.width - (DGP.Margin.1 * 3)) / 2)
@@ -626,7 +626,7 @@
         global
         if (!PWN && !param) {
             SetTimer, ShowHideGui , off
-            MsgBox, 16, ShowHideGui, PWN не задан.`nPWN is not set.
+            MsgBox, 262160, ShowHideGui, PWN не задан.`nPWN is not set.
             Return 
         }
         Critical, On
@@ -657,11 +657,37 @@
         Critical, Off
     }
 
-    GuiLineWidth(Hwnd_A, Hwnd_B = "") {
-        WinGetPos, X_1,, W_1,, ahk_id %Hwnd_A%
-        if Hwnd_B {
-            WinGetPos, X_2,, W_2,, ahk_id %Hwnd_B%
-            Return % (X_2 + W_2) - X_1
+    fGuiSize(Hwnd_A, Hwnd_B := "", ReturnType := "All") {
+        /*
+            fGuiSize возвращает размеры элемента GUI или области между двумя элементами.        
+
+            Если указан только Hwnd_A, будут получены размеры этого элемента.
+            Если также указан Hwnd_B, будут получены размеры прямоугольной области, 
+            начинающейся в левом верхнем углу первого элемента и заканчивающейся правым нижним углом второго.
+
+            ReturnType:
+                "All"    - Вернуть объект {w, h, Width, Height}. (По умолчанию)
+                "w"      - Вернуть ширину.
+                "Width"  - Вернуть ширину.
+                "h"      - Вернуть высоту.
+                "Height" - Вернуть высоту.      
+
+            Пример:
+                Size := fGuiSize(Hwnd)
+                Width := fGuiSize(Hwnd, "", "w")
+                Height := fGuiSize(Hwnd, "", "h")       
+
+                Size := fGuiSize(Hwnd1, Hwnd2)
+                MsgBox % Size.Width " x " Size.Height
+        */
+        WinGetPos, X_1, Y_1, W_1, H_1, ahk_id %Hwnd_A%
+        if Hwnd_B 
+            WinGetPos, X_2, Y_2, W_2, H_2, ahk_id %Hwnd_B%
+        w := Hwnd_B ? ((X_2 + W_2) - X_1) : W_1
+        h := Hwnd_B ? ((Y_2 + H_2) - Y_1) : H_1
+        switch ReturnType {
+            case "w", "Width"  : return w
+            case "h", "Height" : return h
+            case "All" : Return {"w": w, "h": h, "Width": w, "Height": h}
         }
-        Return W_1
     }

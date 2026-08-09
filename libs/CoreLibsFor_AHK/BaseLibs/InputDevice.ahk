@@ -1,4 +1,6 @@
-﻿;;;;;;;;;; Mouse ;;;;;;;;;;
+﻿; global PWN := "" ; Program window name
+
+;;;;;;;;;; Mouse ;;;;;;;;;;
     fSetCursor(x, y) {
         /* 
             fSetCursor мгновенно перемещает курсор мыши в указанную точку экрана. 
@@ -77,6 +79,46 @@
         }
     }
 
+    fMouseClick(x, y, ClickCount = 1, Delay = 25, MoveAfter = "", Button = "Left") {
+        /*
+            Выполняет клик мышью по указанным экранным координатам.
+            Перед кликом перемещает курсор в указанную позицию и ожидает заданное время,
+            чтобы приложение или игра успела отреагировать на перемещение мыши.
+
+            x, y        - Экранные координаты позиции клика.
+            ClickCount  - Количество кликов. (1 по умолчанию)
+            Delay       - Задержка в миллисекундах после перемещения курсора и между кликами. (25 ms. по умолчанию)
+            MoveAfter   - Перемещение курсора после выполнения:
+                          "Center"      - в центр экрана.
+                          "TopLeft"     - в левый верхний угол.
+                          "TopRight"    - в правый верхний угол.
+                          "BottomLeft"  - в левый нижний угол.
+                          "BottomRight" - в правый нижний угол.
+                          ""            - не перемещать курсор. (По умолчанию)
+            Button      - Кнопка мыши: "Left" (По умолчанию), "Right" или "Middle".
+
+            Пример:
+            fMouseClick(500, 500)                  ; Одиночный клик ЛКМ.
+            fMouseClick(500, 500, 2)               ; Двойной клик ЛКМ.
+            fMouseClick(500, 500, 1, 25,, "Right") ; Клик ПКМ.
+            fMouseClick(500, 500, 3, 50, "Center") ; 3 клика и убрать курсор в центр.
+        */
+        fSetCursor(x, y)
+        lSleep(Delay)
+        Loop, %ClickCount% {
+            fMouseInput(Button)
+            if (A_Index < ClickCount)
+                lSleep(Delay)
+        }
+        Switch MoveAfter {
+            case "Center"      : fSetCursor(A_ScreenWidth / 2, A_ScreenHeight / 2)
+            case "TopLeft"     : fSetCursor(1, 1)
+            case "TopRight"    : fSetCursor(A_ScreenWidth, 1)
+            case "BottomLeft"  : fSetCursor(1, A_ScreenHeight)
+            case "BottomRight" : fSetCursor(A_ScreenWidth, A_ScreenHeight)
+        }            
+    }
+
     fMouseInputToWin(WinTitle, Key := "Left", x := 0, y := 0, WheelRotation = 1) {
         /* 
             Функция эмулирует события мыши в указанном окне. 
@@ -101,7 +143,7 @@
                           , WheelRight: 0x020E, WheelLeft: 0x020E } ; WM_MOUSEHWHEEL
         hWnd := WinExist(WinTitle)
         if !hWnd {
-            MsgBox, 16, fKbInputToWin, Окно с именем %WinTitle% не найдено.`nThe window named %WinTitle% was not found.
+            MsgBox, 262160, fKbInputToWin, Окно с именем %WinTitle% не найдено.`nThe window named %WinTitle% was not found.
             return
         }
         lParam := (y << 16) | (x & 0xFFFF)
@@ -139,13 +181,55 @@
         */
         ScanCode := Format("0x{:X}", GetKeySC(Key))
         if !ScanCode {
-            MsgBox, 16, fKeyboardInput, Клавиша %Key% не найдена или указана неверно.`nThe %Key% key was not found or specified incorrectly.
+            MsgBox, 262160, fKeyboardInput, Клавиша %Key% не найдена или указана неверно.`nThe %Key% key was not found or specified incorrectly.
             Return
         }
         if (status = "Down" || status = "Press")
             DllCall("keybd_event", "UChar",  0, "UChar", ScanCode, "UInt", 8, "Ptr", 0)
         if (status = "Up" || status = "Press")
             DllCall("keybd_event", "UChar",  0, "UChar", ScanCode, "UInt", 2, "Ptr", 0)
+    }
+
+    fSendIfWinActive(Key_Code, Key_status = "", NameWindow = "") {
+        /*
+            Функция отправляет нажатие клавиши только в том случае,
+            если указанное окно в данный момент активно.
+
+            Функция использует текущий режим отправки, установленный
+            командой SendMode. Поэтому поведение отправки соответствует
+            обычной команде Send в текущем скрипте.
+
+            Параметр Key_Code:
+                Код или название клавиши, передаваемое команде Send.
+
+            Параметр Key_status:
+                Дополнительный параметр состояния клавиши.
+                Например: "Down" или "Up".
+
+            Параметр NameWindow:
+                Заголовок или идентификатор окна.
+                Если не указан, используется глобальная переменная PWN.
+
+            Возвращаемое значение:
+                1 — нажатие отправлено.
+                0 — указанное окно не активно.
+
+            Пример:
+                fSendIfWinActive("F1")
+                fSendIfWinActive("Space", "Down")
+                fSendIfWinActive("Space", "Up")
+                fSendIfWinActive("Enter", "Up", "ahk_exe Game.exe")
+        */
+        if (!NameWindow && !PWN) {
+            MsgBox, 262160, fSendIfWinActive, Window name error
+            Return
+        }
+        NameWindow := NameWindow != "" ? NameWindow : PWN
+        if WinActive(NameWindow) {
+            Send, {Blind}{%Key_Code% %Key_status%}
+            Return 1
+        }
+        Return 0
     }
 
     fKbInputToWin(WinTitle, Key, State := "Press", SwitchToWin := 0) {
@@ -184,7 +268,7 @@
         */
         hWnd := WinExist(WinTitle)
         if !hWnd {
-            MsgBox, 16, fKbInputToWin, Окно с именем %WinTitle% не найдено.`nThe window named %WinTitle% was not found.
+            MsgBox, 262160, fKbInputToWin, Окно с именем %WinTitle% не найдено.`nThe window named %WinTitle% was not found.
             return
         }
         if SwitchToWin {
@@ -192,7 +276,7 @@
             WinActivate, ahk_id %hWnd%
             WinWaitActive, ahk_id %hWnd%, , 0.5
             if ErrorLevel {
-                MsgBox, 16, fKbInputToWin, Не удалось переключиться на окно %WinTitle%.`nCouldn't switch to %WinTitle% window. `n`nhWnd: %hWnd%
+                MsgBox, 262160, fKbInputToWin, Не удалось переключиться на окно %WinTitle%.`nCouldn't switch to %WinTitle% window. `n`nhWnd: %hWnd%
                 Return
             }
             lSleep(SwitchToWin)
