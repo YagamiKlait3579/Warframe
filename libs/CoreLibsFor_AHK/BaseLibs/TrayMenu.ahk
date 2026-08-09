@@ -32,6 +32,14 @@
     Menu, Tray2, Add, Find text, %funcObj%
     Menu, Tray2, icon, Find text, %OP_Base_ICO%, 20
 
+    funcObj := Func("Tray_links").Bind("WindowSpy")
+    Menu, Tray2, Add, Window Spy, %funcObj%
+    Menu, Tray2, icon, Window Spy, %OP_Base_ICO%, 30
+
+    funcObj := Func("Tray_links").Bind("CoordinateConverter")
+    Menu, Tray2, Add, Coordinate Converter, %funcObj%
+    Menu, Tray2, icon, Coordinate Converter, %OP_Base_ICO%, 31
+
     Menu, Tray, Add
     Menu, Tray, Add, Other programs, :Tray2
     Menu, Tray, icon, Other programs, %OP_Base_ICO%, 22
@@ -68,12 +76,14 @@
 ;;;;;;;;;; Tray functions ;;;;;;;;;;
     Tray_links(param) {
         switch param {
-            case "KeyInfo"  : Run, % """" ProgramSearch("AutoHotkey 1") """" " " """" CheckingFiles("File", False, "KeyInfo.ahk") """"
-            case "FindText" : Run, % """" ProgramSearch("AutoHotkey 1") """" " " """" CheckingFiles("File", False, "FindText.ahk") """"
+            case "KeyInfo"             : Run, % """" ProgramSearch("AutoHotkey 1") """" " " """" CheckingFiles("File", False, "KeyInfo.ahk") """"
+            case "FindText"            : Run, % """" ProgramSearch("AutoHotkey 1") """" " " """" CheckingFiles("File", False, "FindText.ahk") """"
+            case "WindowSpy"           : Run, % """" ProgramSearch("AutoHotkey 1") """" " " """" CheckingFiles("File", False, "WindowSpy.ahk") """"
+            case "CoordinateConverter" : Run, % """" ProgramSearch("AutoHotkey 1") """" " " """" CheckingFiles("File", False, "CoordinateConverter.ahk") """"
             ;--------------------------------------------------
-            case "Discord"  : Run, https://discord.gg/yrRfUMXAnk
-            case "GitHub"   : Run, https://github.com/YagamiKlait3579
-            case "Donate"   : Run, https://www.tbank.ru/rm/r_ZjWxmKELuP.YfEdKjOhWm/tJx2U7674/
+            case "Discord" : Run, https://discord.gg/yrRfUMXAnk
+            case "GitHub"  : Run, https://github.com/YagamiKlait3579
+            case "Donate"  : Run, https://www.tbank.ru/rm/r_ZjWxmKELuP.YfEdKjOhWm/tJx2U7674/
         }
     }
 

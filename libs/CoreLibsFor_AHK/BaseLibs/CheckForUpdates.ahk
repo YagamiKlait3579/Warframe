@@ -8,7 +8,7 @@
     
         ; Проверка ошибок вызова функции
         if (!nameUser || !nameRepo) {
-            MsgBox, 16, CheckForUpdates Error, Не указан nameUser или nameRepo! `nNameUser or nameRepo is not specified!
+            MsgBox, 262160, CheckForUpdates Error, Не указан nameUser или nameRepo! `nNameUser or nameRepo is not specified!
             return 0
         }
     

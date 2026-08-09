@@ -53,7 +53,7 @@
     global gFontScaling  := Round(A_ScreenHeight / 1080, 2)
     global gDPI          := (96 / A_ScreenDPI) 
     global gVK, gSC
-
+    ;--------------------------------------------------
     CheckingFiles("File", True, "Base_ICO")
 
 ;;;;;;;;;; Tray Menu ;;;;;;;;;;
@@ -68,6 +68,10 @@
     funcObj := Func("Tray_links").Bind("GitHub")
     Menu, Tray, Add, GitHub, %funcObj%
     Menu, Tray, icon, GitHub, %OP_Base_ICO%,17
+
+    funcObj := Func("Tray_links").Bind("Donate")
+    Menu, Tray, Add, Donate, %funcObj%
+    Menu, Tray, icon, Donate, %OP_Base_ICO%,28
 
     Menu, Tray, Add
     funcObj := Func("Tray_links").Bind("Reload")
@@ -84,6 +88,7 @@
         switch param {
             case "Discord" : Run, https://discord.gg/yrRfUMXAnk
             case "GitHub"  : Run, https://github.com/YagamiKlait3579
+            case "Donate"  : Run, https://www.tbank.ru/rm/r_ZjWxmKELuP.YfEdKjOhWm/tJx2U7674/
             ;--------------------------------------------------
             case "Reload"  : Reload
             case "Stop"    : ExitApp
@@ -93,43 +98,42 @@
 ;;;;;;;;;; Gui ;;;;;;;;;;
     FontSize := Round((12 * gFontScaling) * gDPI)
     Gui, KeyInfo: +AlwaysOnTop +LastFound -DPIScale +Border -MinimizeBox +HwndKeyInfo
-    
     Gui, KeyInfo: Color, 000000
     Gui, KeyInfo: Font, % " s"FontSize " q3", MS Sans Serif
     Gui, KeyInfo: Show, % " w"(A_ScreenWidth/3) " h"(A_ScreenWidth/3/16*9), Key Info
     WinGetPos, KI_X, KI_Y, KI_W, KI_H, ahk_id %KeyInfo%
-    
+    ;--------------------------------------------------
     Gui, KeyInfo: Add, Picture, % "x+m y"KI_H*0.01 " w"KI_W*0.17 " h-1 +Border +BackgroundTrans vDiscordGUI", % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Base_Images.dll"), "DiscordLogo")
     funcObj := Func("Tray_links").Bind("Discord")
     GuiControl KeyInfo: +g, DiscordGUI, %funcObj%
-
+    ;--------------------------------------------------
     Gui, KeyInfo: Add, Picture, % "x+m y"KI_H*0.01 " w"KI_W*0.19 " h-1 +Border +BackgroundTrans vGitHubGUI", % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Base_Images.dll"), "GitHubLogo")
     funcObj := Func("Tray_links").Bind("GitHub")
     GuiControl KeyInfo: +g, GitHubGUI, %funcObj%
-
+    ;--------------------------------------------------
     Gui, KeyInfo: Add, Text, % " x"KI_W*0.05 " y"KI_H*0.125 " +Section +BackgroundTrans"
     Gui, KeyInfo: Add, Text, % " xs y+ w" KI_W*0.39 " +Center +Border cLime hwndMainText vMainText", Нажмите клавишу`nPress the key
     WinGetPos, MI_X, MI_Y, MI_W, MI_H, ahk_id %MainText%
-    
+    ;--------------------------------------------------
     Gui, KeyInfo: Add, Text, xs y+ +BackgroundTrans
     Gui, KeyInfo: Add, Text, % " xs y+ w" MI_W/3 " h" MI_H " +0x00000201 +Right cFuchsia", VK
     Gui, KeyInfo: Add, Text, % " x+ w" MI_W/3 " h" MI_H " +0x00000201 +Left  cFuchsia vVK_Text",` ------
     Gui, KeyInfo: Add, Text, % " x+ w" MI_W/3 " h" MI_H " +0x00000201 +Center +Border cAqua vVK_Copy gfCopy", Copy
-
+    ;--------------------------------------------------
     Gui, KeyInfo: Add, Text, xs y+ +BackgroundTrans
     Gui, KeyInfo: Add, Text, % " xs y+ w" MI_W/3 " h" MI_H " +0x00000201 +Right cFuchsia", SC
     Gui, KeyInfo: Add, Text, % " x+ w" MI_W/3 " h" MI_H " +0x00000201 +Left cFuchsia vSC_Text",` ------
     Gui, KeyInfo: Add, Text, % " x+ w" MI_W/3 " h" MI_H " +0x00000201 +Center +Border cAqua vSC_Copy gfCopy", Copy
-
+    ;--------------------------------------------------
     Gui, KeyInfo: Add, Text, xs y+ +BackgroundTrans
     Gui, KeyInfo: Font, % " s"FontSize*2 " q3", MS Sans Serif
     Gui, KeyInfo: Add, Text,% " xs y+ w"MI_W " h" MI_H " +Center +0x00000201 +Border cFF8000 vKeyText", ------
-
+    ;--------------------------------------------------
     Gui, KeyInfo: Margin, 0, 0
     Gui, KeyInfo: Add, Picture, % "x0 y0 w"(A_ScreenWidth/3) " h-1", % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Base_Images.dll"), "KeyInfoBG")
 
 ;;;;;;;;;; Start ;;;;;;;;;;
-    OnExit("ExitKeyInfo")
+    OnExit("BeforeExiting")
     hHookKeybd := SetWindowsHookEx() 
     OnMessage(0x6, "WM_ACTIVATE") 
 Return
@@ -211,7 +215,7 @@ Return
         ExitApp
     }
 
-    ExitKeyInfo() {
+    BeforeExiting() {
         if hHookKeybd 
             DllCall("UnhookWindowsHookEx", Ptr, hHookKeybd) 
     }

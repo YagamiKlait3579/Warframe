@@ -25,7 +25,7 @@
 
         ; Проверка на количество параметров, если CreateGlobalVars = false
         if (!CreateGlobalVars && params.Length() > 1) {
-            MsgBox, 16, CheckingFiles Error, 
+            MsgBox, 262160, CheckingFiles Error, 
             (
             При CreateGlobalVars = false можно указать только один параметр для поиска!
             When CreateGlobalVars = false you can specify only one search parameter!

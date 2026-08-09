@@ -62,8 +62,11 @@
     #include %A_Scriptdir%\libs\CoreLibsFor_AHK\BaseLibs\TimeControl.ahk
     #include %A_Scriptdir%\libs\CoreLibsFor_AHK\BaseLibs\CheckForUpdates.ahk
     #include %A_Scriptdir%\libs\CoreLibsFor_AHK\BaseLibs\InputDevice.ahk
+    #include %A_Scriptdir%\libs\CoreLibsFor_AHK\BaseLibs\MiscFunction.ahk
     ;--------------------------------------------------
     #include %A_Scriptdir%\libs\CoreLibsFor_AHK\AuxiliaryScripts\FindText.ahk
     #include %A_Scriptdir%\libs\CoreLibsFor_AHK\AuxiliaryScripts\Gdip.ahk
     ;--------------------------------------------------
     #include *i %A_Scriptdir%\libs\AdditionalFunctions.ahk
+
+    
