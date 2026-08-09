@@ -110,7 +110,7 @@ Return
             Gui, EditTimeGui: Add, UpDown, range0-59
             GuiControl, EditTimeGui: Text, EditSeconds, % RemainingTime.3
         ;--------------------------------------------------
-        w1 := GuiLineWidth(T_Hour, T_Seconds)
+        w1 := fGuiSize(T_Hour, T_Seconds).w
         Gui, EditTimeGui: Add, Text, xm y+m w%w1% cFFD700 +center +Border +0x00000201 vT1 gUpdateValues, `n
         GuiControl, EditTimeGui: Text, T1, Accept
         w1 := A_ScreenWidth / 3
@@ -155,7 +155,7 @@ Return
         ExitMissionFlag := !ExitMissionFlag
         if ExitMissionFlag {
             GuiInGame("Start", "ExitMission")
-            Gui, ExitMission: Add, Text, % " xm ym w" (DebugGui ? GuiLineWidth(DebugGui) : GuiLineWidth(MainInterface)) " +Center cRed", Exit to next mission
+            Gui, ExitMission: Add, Text, % " xm ym w" (DebugGui ? fGuiSize(DebugGui).w : fGuiSize(MainInterface).w) " +Center cRed", Exit to next mission
             if DebugGui
                 GuiInGame("End", "ExitMission", {"Hwnd" : DebugGui})
             Else

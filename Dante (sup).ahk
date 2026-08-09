@@ -58,7 +58,7 @@
         Gui, MainInterface: Add, Text, x+m +Center +Border cFuchsia HwndEndWinth vTime_Gui, %PlaceForTheText%
         GuiControl, MainInterface: Text, Time_Gui, % Round(gTime / 1000) " sec"
         ;--------------------------------------------------
-        A_Width := ((GuiLineWidth(StartWinth, EndWinth) - (DGP.Margin.1 * 2)) / 3)
+        A_Width := ((fGuiSize(StartWinth, EndWinth).w - (DGP.Margin.1 * 2)) / 3)
         Gui, MainInterface: Add, Text, % "xm y+m w" A_Width " +Center +Border c" (Triumph_Flag ? "Lime" : "Red") " vT1", Triumph
         Gui, MainInterface: Add, Text, % "x+m w" A_Width " +Center +Border c" (Wordwarden_Flag ? "Lime" : "Red") " vT2", Wordwarden
         Gui, MainInterface: Add, Text, % "x+m w" A_Width " +Center +Border c" (Pageflight_Flag ? "Lime" : "Red") " vT3", Pageflight
