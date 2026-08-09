@@ -59,9 +59,9 @@
     Raplak := { "Damage"         : 3000
                ,"CritMultiplier" : 2.6
                ,"FireRate"       : 2}
-
+    ;--------------------------------------------------
     CheckingFiles("File", True, "Base_ICO", "SavedSettings.ini")
-    LoadIniSection(OP_SavedSettings, "Eidolons Shield Calculator")
+    LoadIniSection(CheckingFiles("File", True, "SavedSettings.ini"), SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1))
 
 ;;;;;;;;;; Tray Menu ;;;;;;;;;;
     Menu, Tray, Tip, Eidolons Shield Calculator
@@ -76,6 +76,10 @@
     Menu, Tray, Add, GitHub, %funcObj%
     Menu, Tray, icon, GitHub, %OP_Base_ICO%,17
 
+    funcObj := Func("Tray_links").Bind("Donate")
+    Menu, Tray, Add, Donate, %funcObj%
+    Menu, Tray, icon, Donate, %OP_Base_ICO%,28
+
     Menu, Tray, Add
     funcObj := Func("Tray_links").Bind("Reload")
     Menu, Tray, Add, Reload, %funcObj% 
@@ -86,11 +90,12 @@
     Menu, Tray, icon, Stop (exit), %OP_Base_ICO%,3
 
     Menu, Tray, Default, Stop (exit)
-
+    ;--------------------------------------------------
     Tray_links(param) {
         switch param {
             case "Discord" : Run, https://discord.gg/yrRfUMXAnk
             case "GitHub"  : Run, https://github.com/YagamiKlait3579
+            case "Donate"  : Run, https://www.tbank.ru/rm/r_ZjWxmKELuP.YfEdKjOhWm/tJx2U7674/
             ;--------------------------------------------------
             case "Reload"  : Reload
             case "Stop"    : ExitApp
@@ -224,7 +229,7 @@
         Gui, Calculator: Add, Picture, % "x0 y0 w"(A_ScreenWidth/2) " h-1", % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Warframe_Images.dll"), "EidolonsShieldCalculator")
 
 ;;;;;;;;;; Start ;;;;;;;;;;
-    OnExit("ExitCalculator")
+    OnExit("BeforeExiting")
     Update()
 Return
 
@@ -289,13 +294,13 @@ Return
         ExitApp
     }
 
-    ExitCalculator() {
+    BeforeExiting() {
         global
         local A_Checkbox := ["CB_VoltShield", "CB_MaduraiBoostCrit", "CB_EternalEradicate"
                             , "CB_Bless", "CB_MaduraiPassive", "CB_DuviriPassive", "CB_Unairu"
                             , "CB_MaduraiFirstAbility", "CB_MaduraiSecondAbility", "CB_Jade", "E_Jade"]
         for A_Loop, A_key in A_Checkbox {
             StringReplace, B_Key, %A_key%, ""
-            IniWrite, %B_Key% , %OP_SavedSettings%, Eidolons Shield Calculator, %A_key%
+            IniWrite, %B_Key%, %OP_SavedSettings%, % SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1), %A_key%
         }      
     }
