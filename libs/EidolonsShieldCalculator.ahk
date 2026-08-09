@@ -216,11 +216,11 @@
         Gui, Calculator: Add, Edit, % " x+ w" MI_W-(MI_W*0.60) " h"MI_H " -TabStop +Number +Center Limit4 vE_Jade gUpdate", %E_Jade%
 
     ;*** Links ***
-        Gui, Calculator: Add, Picture, % "xs y"KI_H*0.7 " w"MI_W " h-1 +Border +BackgroundTrans vDiscordGUI", % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Base_Images.dll"), "DiscordLogo")
+        Gui, Calculator: Add, Picture, % "xs y"KI_H*0.7 " w"MI_W/2.15 " h-1 +Border +BackgroundTrans vDiscordGUI", % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Base_Images.dll"), "Discord500")
         funcObj := Func("Tray_links").Bind("Discord")
         GuiControl Calculator: +g, DiscordGUI, %funcObj%
 
-        Gui, Calculator: Add, Picture, % "xs y+m w"MI_W " h-1 +Border +BackgroundTrans vGitHubGUI", % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Base_Images.dll"), "GitHubLogo")
+        Gui, Calculator: Add, Picture, % "x+m yp w"MI_W/2.15 " h-1 +Border +BackgroundTrans vGitHubGUI", % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Base_Images.dll"), "GitHub800")
         funcObj := Func("Tray_links").Bind("GitHub")
         GuiControl Calculator: +g, GitHubGUI, %funcObj%
 
