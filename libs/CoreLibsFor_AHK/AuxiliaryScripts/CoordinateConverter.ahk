@@ -113,11 +113,11 @@
     Gui, CoordinateConverter: Show, % " w"(A_ScreenWidth/3) " h"(A_ScreenWidth/3/16*9), Coordinate Converter
     WinGetPos, CC_X, CC_Y, CC_W, CC_H, ahk_id %CoordinateConverter%
     ;--------------------------------------------------
-    Gui, CoordinateConverter: Add, Picture, % " x" CC_W*0.1 " y"CC_H*0.825 " w"CC_W*0.17 " h-1 +Border +BackgroundTrans vDiscordGUI", % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Base_Images.dll"), "DiscordLogo")
+    Gui, CoordinateConverter: Add, Picture, % " x" CC_W*0.1 " y"CC_H*0.75 " w"CC_W*0.15 " h-1 +Border +BackgroundTrans vDiscordGUI", % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Base_Images.dll"), "Discord1")
     funcObj := Func("Tray_links").Bind("Discord")
     GuiControl CoordinateConverter: +g, DiscordGUI, %funcObj%
     ;--------------------------------------------------
-    Gui, CoordinateConverter: Add, Picture, % "x+m y"CC_H*0.825 " w"CC_W*0.19 " h-1 +Border +BackgroundTrans vGitHubGUI", % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Base_Images.dll"), "GitHubLogo")
+    Gui, CoordinateConverter: Add, Picture, % "x+m yp wp h-1 +Border +BackgroundTrans vGitHubGUI", % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Base_Images.dll"), "GitHub1")
     funcObj := Func("Tray_links").Bind("GitHub")
     GuiControl CoordinateConverter: +g, GitHubGUI, %funcObj%
     ;--------------------------------------------------

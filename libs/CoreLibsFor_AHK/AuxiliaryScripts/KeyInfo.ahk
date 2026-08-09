@@ -103,11 +103,11 @@
     Gui, KeyInfo: Show, % " w"(A_ScreenWidth/3) " h"(A_ScreenWidth/3/16*9), Key Info
     WinGetPos, KI_X, KI_Y, KI_W, KI_H, ahk_id %KeyInfo%
     ;--------------------------------------------------
-    Gui, KeyInfo: Add, Picture, % "x+m y"KI_H*0.01 " w"KI_W*0.17 " h-1 +Border +BackgroundTrans vDiscordGUI", % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Base_Images.dll"), "DiscordLogo")
+    Gui, KeyInfo: Add, Picture, % "x"KI_W*0.5 " y"KI_H*0.15 " w"KI_W*0.10 " h-1 +Border +BackgroundTrans vDiscordGUI", % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Base_Images.dll"), "Discord500")
     funcObj := Func("Tray_links").Bind("Discord")
     GuiControl KeyInfo: +g, DiscordGUI, %funcObj%
     ;--------------------------------------------------
-    Gui, KeyInfo: Add, Picture, % "x+m y"KI_H*0.01 " w"KI_W*0.19 " h-1 +Border +BackgroundTrans vGitHubGUI", % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Base_Images.dll"), "GitHubLogo")
+    Gui, KeyInfo: Add, Picture, % "x"KI_W*0.875 " y"KI_H*0.15 " w"KI_W*0.10 " h-1 +Border +BackgroundTrans vGitHubGUI", % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Base_Images.dll"), "GitHub800")
     funcObj := Func("Tray_links").Bind("GitHub")
     GuiControl KeyInfo: +g, GitHubGUI, %funcObj%
     ;--------------------------------------------------

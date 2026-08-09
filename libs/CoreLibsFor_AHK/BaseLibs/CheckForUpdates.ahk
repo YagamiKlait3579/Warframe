@@ -72,10 +72,10 @@
         funcObj := Func("CheckForUpdates_Run").Bind("OffUpdates")
         GuiControl CheckForUpdates: +g, Button2, %FuncObj%
         ;--------------------------------------------------
-        Gui, CheckForUpdates: Add, Picture, xm y+m w-1 hp +Border +BackgroundTrans vDiscordGUI, % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Base_Images.dll"), "GitHubLogo")
+        Gui, CheckForUpdates: Add, Picture, xm y+m w-1 hp +Border +BackgroundTrans vDiscordGUI, % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Base_Images.dll"), "GitHubNoBG_Min")
         funcObj := Func("Tray_links").Bind("Discord")
         GuiControl CheckForUpdates: +g, DiscordGUI, %funcObj%
-        Gui, CheckForUpdates: Add, Picture, xm y+m w-1 hp +Border +BackgroundTrans vGitHubGUI, % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Base_Images.dll"), "DiscordLogo")
+        Gui, CheckForUpdates: Add, Picture, xm y+m w-1 hp +Border +BackgroundTrans vGitHubGUI, % "HBITMAP:" ReadImages(CheckingFiles("File", False, "Base_Images.dll"), "DiscordNoBG_Min")
         funcObj := Func("Tray_links").Bind("GitHub")
         GuiControl CheckForUpdates: +g, GitHubGUI, %funcObj%
         ;--------------------------------------------------
