@@ -54,21 +54,24 @@
         global
         ; DGP = Default GUI Parameters (Парамеры по умолчанию для всех GUI)
         local A_Loop, A_key
-        local A_DGP := {"Font"         : "MS Sans Serif"      ; Стиль шрифта [MS Sans Serif, Sylfaen]
-                       ,"FontColor"    : "White"              ; Цвет шрифта
-                       ,"FontSize"     : 11                   ; Размер шрифта
-                       ,"Margin"       : [0.5 + 0, 0.125 + 0] ; Стандартный отступ (По умолчанию в AHK [x = 1.25, y = 0.75])
-                       ,"BorderColor"  : "Aqua"               ; Цвет рамки
-                       ,"BorderSize"   : 1                    ; Толщина рамки
-                       ,"Transparency" : 100                  ; Прозрачность, от 0 (прозрачно) до 255 (непрозрачно)
-                       ,"Blur"         : 255                  ; Размытие фона, от 0 (без размытия) до 255 (полное размытие)
-                       ,"Scale"        : 100                } ; Масштаб интерфейса (В процентах)
+        local A_DGP := {"Font"         : "MS Sans Serif" ; Стиль шрифта [MS Sans Serif, Sylfaen]
+                       ,"FontColor"    : "White"         ; Цвет шрифта
+                       ,"FontSize"     : 11              ; Размер шрифта
+                       ,"Margin"       : [0.5, 0.125]    ; Стандартный отступ (По умолчанию в AHK [x = 1.25, y = 0.75])
+                       ,"BorderColor"  : "Aqua"          ; Цвет рамки
+                       ,"BorderSize"   : 1               ; Толщина рамки
+                       ,"Transparency" : 100             ; Прозрачность, от 0 (прозрачно) до 255 (непрозрачно)
+                       ,"Blur"         : 255             ; Размытие фона, от 0 (без размытия) до 255 (полное размытие)
+                       ,"Scale"        : 100           } ; Масштаб интерфейса (В процентах)
         Switch params {
-            case "SetDefault", "Default" : DGP := A_DGP
+            case "SetDefault", "Default" : 
+                DGP := A_DGP
+                DGP.FontSize := Round(((A_DGP.FontSize * gFontScaling) * gDPI) * (0.01 * A_DGP.Scale))
+                DGP.Margin := [Round(A_DGP.FontSize * A_DGP.Margin.1), Round(A_DGP.FontSize * A_DGP.Margin.2)]
             case "Save", "SaveBackup" :
-                        local backup := DGP.Clone()
-                        backup.Margin := [DGP.Margin.1, DGP.Margin.2]
-                        Return backup
+                local backup := DGP.Clone()
+                backup.Margin := [DGP.Margin.1, DGP.Margin.2]
+                Return backup
             Default:
                 for A_Loop, A_key in ["Font", "FontColor","BorderColor","BorderSize","Transparency","Blur","Scale"]
                     DGP[A_key] := params[A_key] ? params[A_key] : (DGP[A_key] ? DGP[A_key] : A_DGP[A_key])
