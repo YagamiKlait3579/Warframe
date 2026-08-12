@@ -32,6 +32,8 @@
 
 ;;;;;;;;;; Variables ;;;;;;;;;;
     ; EAR = Endo AutoRun
+    if !CheckingFiles("File", True, "SavedSettings.ini")
+        FileAppend, , % A_WorkingDir . "\libs\SavedSettings.ini"
     LoadIniSection(CheckingFiles("File", True, "SavedSettings.ini"), SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1))
     global A_ScriptStatus := 0
     global EAR_Method := EAR_Method ? EAR_Method : "Left"

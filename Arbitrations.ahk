@@ -16,6 +16,8 @@
     DurationOfEclipse     := 53     ; Длительность способности "Затмение" (sec)
     
 ;;;;;;;;;; Variables ;;;;;;;;;;
+    if !CheckingFiles("File", True, "SavedSettings.ini")
+        FileAppend, , % A_WorkingDir . "\libs\SavedSettings.ini"
     LoadIniSection(CheckingFiles("File", True, "SavedSettings.ini"), SubStr(A_ScriptName, 1, InStr(A_ScriptName, ".", , -1) - 1))
     ;--------------------------------------------------
     global RunningProfile, RunningFlag := False
