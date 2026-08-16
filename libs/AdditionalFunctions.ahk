@@ -46,7 +46,7 @@
         Send, {Blind}{%EmoteAgreeKey%}
         fSleep(2)
         Send, {Blind}{%EmoteAgreeKey2%}
-        fMoveMouse(0, 1500)
+        ;fMoveMouse(0, 1500)
     }
 
     EnergyDrain() {
