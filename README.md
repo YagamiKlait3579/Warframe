@@ -118,6 +118,26 @@
 
 ---
 
+### Skip ArchGun
+
+Позволяет быстро призвать **Арчвинг-оружие**, пропуская стандартную длительную анимацию.
+
+Функция использует особенности (баги) поведения игры, поэтому после быстрого призыва запускается скрытый **15-секундный таймер**. Когда таймер истекает, игра проверяет, находится ли в этот момент Арчвинг-оружие в руках.
+
+Если в момент окончания таймера Арчвинг-оружия в руках нет, игра может заблокировать клавишу оружия ближнего боя. В результате становится невозможно атаковать оружием ближнего боя, спешиться с Арчвинга и выполнять другие действия, связанные с этой клавишей.
+
+Чтобы снять такую блокировку, необходимо взять и убрать любую удочку. Поэтому перед использованием функции рекомендуется убедиться, что удочка находится в вашем снаряжении.
+
+Если не хотите следить за таймером, после быстрого призыва можно убрать Арчвинг-оружие и призвать его повторно обычным способом. Это отменяет скрытый таймер и позволяет избежать возникновения блокировки.
+
+Функция также имеет параметр `RepairArchGun`. При его включении после быстрого призыва дополнительно выполняется исправление перезарядки Арчвинг-оружия. Без него оружие призывается немного быстрее, но после призыва может быть доступна только одна обойма. Такой режим может быть полезен, например, для спидрана, где одной обоймы достаточно.
+
+Быстрый призыв основан на игровых багах, а не на штатной механике Warframe. Поэтому его работа может зависеть от текущей версии игры. В некоторых патчах баг переставал работать для игроков, находившихся в миссии в качестве клиента, а после последующих обновлений снова начинал работать. Не исключено, что в будущем разработчики полностью исправят этот баг или изменят его поведение.
+
+**Клавиша:** `SkipArchGunKey`
+
+---
+
 ### Switching Macros
 
 Позволяет быстро переключиться на любой другой макрос из основной папки проекта прямо во время игры.
@@ -289,6 +309,26 @@ For the function to work correctly, you must be standing **on a flat surface**, 
 ⚠️ **Important:** this mechanic essentially relies on quirks (bugs) in the game's animation behavior. The Warframe developers may fix this behavior in the future, in which case the function may stop working or behave differently.
 
 **Key:** `CancelAnimationKey`
+
+---
+
+### Skip ArchGun
+
+Allows you to quickly summon your **Archgun**, skipping the standard lengthy animation.
+
+The function uses quirks (bugs) in the game's behavior, so after the quick summon a hidden **15-second timer** starts. When the timer expires, the game checks whether the Archgun is currently equipped.
+
+If the Archgun is not equipped when the timer expires, the game may lock the melee weapon key. As a result, you may be unable to attack with your melee weapon, dismount from the Archwing, or perform other actions associated with that key.
+
+To remove this lock, you need to equip and put away any fishing spear. Therefore, it is recommended to make sure that a fishing spear is available in your gear before using this function.
+
+If you do not want to keep track of the timer, after using the quick summon you can put away the Archgun and summon it again using the normal method. This cancels the hidden timer and prevents the lock from occurring.
+
+The function also has a `RepairArchGun` parameter. When enabled, the macro additionally fixes the Archgun's reload state after the quick summon. Without it, the Archgun can be summoned slightly faster, but after summoning it, only one magazine may be available. This mode can be useful, for example, for speedrunning, where a single magazine is enough.
+
+The quick summon is based on game bugs rather than a normal Warframe mechanic. Therefore, its behavior may depend on the current game version. In some patches, the bug stopped working for players who were clients rather than the host, while later updates made it work again. It is possible that the developers may completely fix this bug or change its behavior in the future.
+
+**Key:** `SkipArchGunKey`
 
 ---
 

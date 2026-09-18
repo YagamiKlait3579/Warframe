@@ -7,12 +7,14 @@
 
 ;;;;;;;;;; Variables ;;;;;;;;;;
     global A_MagusAnomaly
+    global gSkipArchGun_CountdownStamp
 
 ;;;;;;;;;; Hotkeys ;;;;;;;;;;
     Hotkey, *%mAbilityBuffKey%, Madurai_AbilityBuff
     Hotkey, *%EnergyDrainKey%, EnergyDrain
     Hotkey, *%MagusAnomalyKey%, MagusAnomaly
     Hotkey, *%CancelAnimationKey%, CancelAnimation
+    Hotkey, *%SkipArchGunKey%, SkipArchGun
     Hotkey, *%InputTestKey%, InputTest
     
 ;;;;;;;;;; Additional functions ;;;;;;;;;;
@@ -119,6 +121,46 @@
             lSleep(1)
         }
         fDebugGui("Edit", "Cancel Animation", TimePassed(CancelAnimation_Start) " ms")
+    }
+
+    SkipArchGun(ShowGui = True) {
+        global
+        local A_Stamp
+        TimeStamp(A_Stamp)
+        Send, {Blind}{%ZoomKey%}
+        fSleep(2)
+        Send, {Blind}{%ArchGunKey%}{%OperatorKey%}
+        fSleep(4,135)
+        Send, {Blind}{%MeleeKey%}
+        if RepairArchGun {
+            fSleep(2,40)
+            Send, {Blind}{%OperatorKey%}
+            fSleep(4,135)
+            Send, {Blind}{%MeleeKey%}
+        } 
+        TimeStamp(gSkipArchGun_CountdownStamp)
+        fDebugGui("Edit", "Skip ArchGun", TimePassed(A_Stamp) " ms")
+        if ShowGui {
+            SetTimer, SkipArchGun_CountdownToError, 100
+            if !WinExist("ahk_id " SkipArchGun_GUI) {
+                UpdateDGP("Default")
+                UpdateDGP({"Transparency" : gTransparency, "Blur" : gBlur, "Scale" : gInterfaceScale})
+                GuiInGame("Start", "SkipArchGun_GUI")
+                Gui, SkipArchGun_GUI: Add, Text, xm ym +Center,` Countdown to the ArchGun error: `
+                Gui, SkipArchGun_GUI: Add, Text, x+m yp +Center +Border cFuchsia vSkipArchGun_CD,` - - - - - `
+                GuiInGame("End", "SkipArchGun_GUI", {"Hwnd" : [MainInterface,"Left", "Auto", ""]})
+            }
+        }
+    }
+
+    SkipArchGun_CountdownToError() {
+        A_Time := Round((15000 - TimePassed(gSkipArchGun_CountdownStamp)) / 1000, 1)
+        if (A_Time > 0)
+            GuiInGame("Edit", "SkipArchGun_GUI", {"id" : "SkipArchGun_CD", "Text" : A_Time " sec"})
+        Else {
+            GuiInGame("Destroy", "SkipArchGun_GUI")
+            SetTimer, SkipArchGun_CountdownToError, Off
+        }   
     }
 
     InputTest() {

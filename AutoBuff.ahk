@@ -1,7 +1,7 @@
 ﻿;;;;;;;;;; Loading ;;;;;;;;;;
     #include %A_Scriptdir%\libs\CoreLibsFor_AHK\BaseLibs\Header.ahk
     ;--------------------------------------------------
-    #IfWinActive, Warframe
+    ;#IfWinActive, Warframe
     global PWN := "Warframe" ; Program window name
     CheckForUpdates("YagamiKlait3579", "Warframe", "main", CheckingFiles("File", False, "Header.ahk"))
     OnExit("BeforeExiting")
@@ -207,15 +207,7 @@ Return
         lSleep(500)
         Send, {Blind}{%AbilityD_Key%}
         lSleep(1500)
-        Send, {Blind}{%ZoomKey%}
-        fSleep(2)
-        Send, {Blind}{%ArchGunKey%}{%OperatorKey%}
-        fSleep(4,135)
-        Send, {Blind}{%MeleeKey%}
-        fSleep(2,40)
-        Send, {Blind}{%OperatorKey%}
-        fSleep(4,135)
-        Send, {Blind}{%MeleeKey%}
+        SkipArchGun(False)
         lSleep(500)
         Loop, 10 {
             Send, {Blind}{%PrimFireKey%}
