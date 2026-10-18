@@ -1,7 +1,7 @@
 ﻿;;;;;;;;;; Loading ;;;;;;;;;;
     #include %A_Scriptdir%\libs\CoreLibsFor_AHK\BaseLibs\Header.ahk
     ;--------------------------------------------------
-    ;#IfWinActive, Warframe
+    #IfWinActive, Warframe
     global PWN := "Warframe" ; Program window name
     CheckForUpdates("YagamiKlait3579", "Warframe", "main", CheckingFiles("File", False, "Header.ahk"))
     OnExit("BeforeExiting")
@@ -46,8 +46,9 @@
     */
 
 ;;;;;;;;;; Setting ;;;;;;;;;;
-    cameraReturn  := 500    ; Величина возврата камеры после выполнения бафа.
-    EditStatusKey  = Alt    ; Переключение метода ударов клавишами IncreaseKey и DecreaseKey при удержании этой клавиши
+    EditStatusKey       = Alt        ; Переключение варианта бафа клавишами IncreaseKey и DecreaseKey при удержании этой клавиши
+    ;--------------------------------------------------
+    NidusCameraOffset  := [-500, 0]  ; Смещение камеры для установки второго гриба в макросе Нидуса
 
 ;;;;;;;;;; Variables ;;;;;;;;;;
     if !CheckingFiles("File", True, "SavedSettings.ini")
@@ -106,84 +107,45 @@ Return
         }
     }
 
-    upPowerAbilities(param = "Full") {
-        global
-        Send, {Blind}{%OperatorKey%}
-        lSleep(200)
-        TimeStamp(AbilityB)
-        switch param {
-            case "Full" :
-                Send, {Blind}{%AbilityB_Key%}
-                lSleep(20)
-                        Send, {Blind}{%CrouchKey% Down}
-                        lSleep(20)
-                        Loop, 3 {
-                            Send, {Blind}{%JumpKey%}
-                            lSleep(100)
-                        }
-                Send, {Blind}{%CrouchKey% Up}
-            case "Min" : Send, {Blind}{%AbilityB_Key%}
-        }
-        lSleep(400, AbilityB)
-        Send, {Blind}{%MeleeKey%}
-    }
-
 ;;;;;;;;;; Scripts ;;;;;;;;;;
     Wisp() {
         global
         TimeStamp(AutoBuff_Start)
-        Loop, 4 
-            fMoveMouse(0, -gscreen[2]), fSleep(1)
-        Send, {Blind}{%MeleeKey%}
-        lSleep(100)
-        upPowerAbilities()
-        lSleep(50)
-        Send, {Blind}{%MeleeKey%}
         Send, {Blind}{%AbilityA_Key% Down}
         lSleep(400)
         Send, {Blind}{%AbilityA_Key% Up}
         lSleep(700)
-        upPowerAbilities("Min")
+        Madurai_AbilityBuff()
         lSleep(100)
         Send, {Blind}{%AbilityA_Key% Down}
         lSleep(400)
         Send, {Blind}{%AbilityA_Key% Up}
         lSleep(700)
-        upPowerAbilities("Min")
+        Madurai_AbilityBuff()
         lSleep(100)
         Send, {Blind}{%AbilityA_Key%}
         lSleep(400)
         Send, {Blind}{%AbilityA_Key% Down}
         lSleep(400)
         Send, {Blind}{%AbilityA_Key% Up}
-        fMoveMouse(0, cameraReturn)
         fDebugGui("Edit", "Auto Buff", TimePassed(AutoBuff_Start) " ms") 
     }
 
     JadeMin() {
         global
         TimeStamp(AutoBuff_Start)
-        Loop, 4 
-            fMoveMouse(0, -gscreen[2]), fSleep(1)
-        Send, {Blind}{%MeleeKey%}
-        lSleep(100)
-        upPowerAbilities()
+        Madurai_AbilityBuff()
         lSleep(50)
         Send, {Blind}{%AbilityB_Key% Down}
         lSleep(400)
         Send, {Blind}{%AbilityB_Key% Up}
-        fMoveMouse(0, cameraReturn)
         fDebugGui("Edit", "Auto Buff", TimePassed(AutoBuff_Start) " ms") 
     }
 
     JadeFull() {
         global
         TimeStamp(AutoBuff_Start)
-        Loop, 4 
-            fMoveMouse(0, -gscreen[2]), fSleep(1)
-        Send, {Blind}{%MeleeKey%}
-        lSleep(100)
-        upPowerAbilities()
+        Madurai_AbilityBuff()
         lSleep(50)
         Send, {Blind}{%AbilityB_Key%}
         lSleep(400)
@@ -191,10 +153,9 @@ Return
         lSleep(400)
         Send, {Blind}{%AbilityB_Key% Up}
         lSleep(700)
-        upPowerAbilities("Min")
+        Madurai_AbilityBuff()
         lSleep(100)
         Send, {Blind}{%AbilityD_Key%}
-        fMoveMouse(0, cameraReturn)
         fDebugGui("Edit", "Auto Buff", TimePassed(AutoBuff_Start) " ms") 
     }
 
@@ -203,7 +164,7 @@ Return
         TimeStamp(AutoBuff_Start)
         Send, {Blind}{%AbilityD_Key%}
         lSleep(1000)
-        fMoveMouse(-cameraReturn/3, 0)
+        fMoveMouse(-NidusCameraOffset, 0)
         lSleep(500)
         Send, {Blind}{%AbilityD_Key%}
         lSleep(1500)
@@ -214,12 +175,7 @@ Return
             lSleep(100)
         }
         lSleep(100)
-        Loop, 4 
-            fMoveMouse(0, -gscreen[2]), fSleep(1)
-        lSleep(100)
-        upPowerAbilities()
-        lSleep(100)
-        fMoveMouse(0, cameraReturn)
+        Madurai_AbilityBuff()
         fDebugGui("Edit", "Auto Buff", TimePassed(AutoBuff_Start) " ms") 
     }
 

@@ -15,7 +15,11 @@
     Hotkey, *%MagusAnomalyKey%, MagusAnomaly
     Hotkey, *%CancelAnimationKey%, CancelAnimation
     Hotkey, *%SkipArchGunKey%, SkipArchGun
+    Hotkey, *%DialogueSkipKey%, DialogueSkip
+    ;--------------------------------------------------
     Hotkey, *%InputTestKey%, InputTest
+    Hotkey, *%PixelSearchTestKey%, PixelSearchTest
+    
     
 ;;;;;;;;;; Additional functions ;;;;;;;;;;
     Madurai_AbilityBuff() {
@@ -48,7 +52,7 @@
         Send, {Blind}{%EmoteAgreeKey%}
         fSleep(2)
         Send, {Blind}{%EmoteAgreeKey2%}
-        ;fMoveMouse(0, 1500)
+        fMoveMouse(0, cameraSTB)
     }
 
     EnergyDrain() {
@@ -163,8 +167,25 @@
         }   
     }
 
+    DialogueSkip() {
+        global
+        ;local windowInfo := winfWinGetClientPos(PWN)
+        Send, {Blind}{Esc}
+        lSleep(250)
+        ; 1750, 970
+        ;fMouseClick((windowInfo.w * 0.9115)*(DialogueSkipScale * 0.01), (windowInfo.h * 0.8981)*(DialogueSkipScale * 0.01))
+        fMouseClick((A_ScreenWidth * 0.9115)*(DialogueSkipScale * 0.01), (A_ScreenHeight * 0.8981)*(DialogueSkipScale * 0.01), 4)
+        lSleep(500)
+        Loop, 4 {
+            Send, {Blind}{Esc}
+            lSleep(25)
+        }
+    }
+
+;;;;;;;;;; Debugging ;;;;;;;;;;
     InputTest() {
         global
+        local InputTest_Start, BeforeInput, AfterInput
         local AverageInput := ""
         TimeStamp(InputTest_Start)
         loop, {
@@ -177,6 +198,26 @@
             if (TimePassed(InputTest_Start,,"sec") >= 1) {
                 AverageInput := Round(AverageInput / A_Index, 3)
                 fDebugGui("Edit", "Input Test", AverageInput " ms")
+                Break
+            } 
+        }
+    }
+
+    PixelSearchTest() {
+        global
+        local PixelSearchTest_Start, BeforePixelSearch, AfterPixelSearch
+        local AveragePixelSearch := ""
+        TimeStamp(PixelSearchTest_Start)
+        loop, {
+            TimeStamp(BeforePixelSearch)
+            PixelSearch, , , gScreenCenter[1]-10, gScreenCenter[2]-10, gScreenCenter[1]+10, gScreenCenter[2]+10, 0xFFFFFF, 10, Fast RGB
+            TimeStamp(AfterPixelSearch)
+            fDebugGui("Edit", "Pixel Search Test", TimePassed(BeforePixelSearch, AfterPixelSearch) " ms")
+            AveragePixelSearch += TimePassed(BeforePixelSearch, AfterPixelSearch)
+            Sleep, 1
+            if (TimePassed(PixelSearchTest_Start,,"sec") >= 1) {
+                AveragePixelSearch := Round(AveragePixelSearch / A_Index, 3)
+                fDebugGui("Edit", "Pixel Search Test", AveragePixelSearch " ms")
                 Break
             } 
         }
