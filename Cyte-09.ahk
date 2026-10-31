@@ -46,19 +46,19 @@
 ;;;;;;;;;; Setting ;;;;;;;;;;
     SkillCastTime   := 1000     ; Время применения одной способности (ms) 
     EditStatusKey    = Alt      ; Переключение проверяемой стихии клавишами IncreaseKey и DecreaseKey при удержании этой клавиши
-    DebugGuiKey      =          ; Показыть\Скрыть зоны триггеров для отладки
+    DebugGuiKey      = 9        ; Показыть\Скрыть зоны триггеров для отладки
     ; Operator
-    Operator_Coords  := [1867, 935, 1890, 955]    ; Координаты триггера оператора
+    Operator_Coords  := [1870, 935, 1890, 950]    ; Координаты триггера оператора
     Operator_Color   := "dcdddd"                  ; Цвет триггера (цвет в HEX формате)
-    Operator_AColor  := 30                        ; Отклонения от оригинала цвета (от 0 до 255)
+    Operator_AColor  := 5                         ; Отклонения от оригинала цвета (от 0 до 255)
     ; First ability
-    FirstA_Coords    := [1650, 997, 1670, 1010]   ; Координаты триггера первой способности
+    FirstA_Coords    := [1650, 997, 1670, 1009]   ; Координаты триггера первой способности
     FirstA_Color     := "5ad205"                  ; Цвет триггера (цвет в HEX формате)
-    FirstA_AColor    := 10                        ; Отклонения от оригинала цвета (от 0 до 255)
+    FirstA_AColor    := 5                         ; Отклонения от оригинала цвета (от 0 до 255)
     ; Fourth ability
-    FourthA_Coords   := [1785, 1005, 1805, 1015]  ; Координаты триггера четвертой способности
+    FourthA_Coords   := [1785, 1006, 1805, 1016]  ; Координаты триггера четвертой способности
     FourthA_Color    := "5ad205"                  ; Цвет триггера (цвет в HEX формате)
-    FourthA_AColor   := 10                        ; Отклонения от оригинала цвета (от 0 до 255)
+    FourthA_AColor   := 5                         ; Отклонения от оригинала цвета (от 0 до 255)
     ; Ammo
     Ammo_Coords      := [1770, 930, 1790, 945]    ; Координаты триггера стихии патронов
     ; Массив списка стихий [Имя в GUI, цвет в HEX формате, Отклонения от оригинала цвета]           
@@ -82,10 +82,12 @@
     ;--------------------------------------------------
     global SelectedStatus := SelectedStatus > Ammo_ColorList.Count() ? 1 : (SelectedStatus ? SelectedStatus : 1)
     global A_ScriptStatus := 0
+    global FalsePositives := 0
 
 ;;;;;;;;;; Hotkeys ;;;;;;;;;;
     Hotkey, *%StartKey%, StartStop
     Hotkey, *%DebugGuiKey%, TestAllGui
+    Hotkey, *%OperatorKey%, NoFalsePositives
 
     fHotkey := Func("StatusSwitching").Bind("Increase")
     Hotkey, *%IncreaseKey%, %fHotkey%
@@ -150,6 +152,12 @@ Return
         GuiInGame("Edit", "MainInterface", {"id" : "SelectedStatus_Gui", "Color" : Ammo_ColorList[SelectedStatus].2, "Text" : Ammo_ColorList[SelectedStatus].1})
     }
 
+    NoFalsePositives() {
+        global
+        TimeStamp(FalsePositives)
+        Send, {Blind}{%OperatorKey%}
+    }
+
     TestAllGui() {
         global
         static B_Gui
@@ -173,6 +181,12 @@ Return
         local Stamp_A
         While A_ScriptStatus {
             TimeStamp(Stamp_A)
+            if (TimePassed(FalsePositives) < 500) {
+                fDebugGui("Edit", "No false positives", 501 - TimePassed(FalsePositives))
+                Sleep, 50
+                Continue 
+            } else 
+                FalsePositives := 0
             if fPixelSearch(Operator_Coords, Operator_Color, Operator_AColor) {
                 if fPixelSearch(FirstA_Coords, FirstA_Color, FirstA_AColor) {
                     Sleep, 250
